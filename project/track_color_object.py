@@ -104,13 +104,15 @@ while(True):
     #---------------------------------
     # Find contours of brightly-colored drawing object
     #---------------------------------
-    edges = cv2.Canny(mask, 100, 200)
-    ret,thresh = cv2.threshold(edges, 127, 255, 0)
-    contours,hierarchy = cv2.findContours(thresh, 1, 2)
-    cnt = contours[0]
+    #edges = cv2.Canny(mask, 100, 200)
+    #ret, thresh = cv2.threshold(edges, 127, 255, 0)
     
-    x,y,w,h = cv2.boundingRect(cnt)
-    frame = cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2)
+    #ret, thresh = cv2.threshold(mask, 127, 255, 0)
+    #contours,hierarchy = cv2.findContours(thresh, 1, 2)
+    #cnt = contours[0]
+    
+    #x,y,w,h = cv2.boundingRect(cnt)
+    #frame = cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 2)
     
     
     
