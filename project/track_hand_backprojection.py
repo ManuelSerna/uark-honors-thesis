@@ -6,12 +6,60 @@ Notes:
     - For good drawing space, have hand about 18 cm from camera lens
 
 Tracking assumptions (for histogram approach to work):
-    - Lighting does not change
     - Environment does not change significantly
 '''
 
+
+
 import cv2
 import numpy as np
+
+
+
+#=================================
+# Setup
+#=================================
+roi_captured = False # mark as true if user is ready to acquire skin-color histogram
+drawing = False # marked as true when user is ready to immediately begin drawing with their palm centroid
+
+# Haar cascades can be found on my Mnajaro sys here: 
+# /usr/lib/python3.8/site-packages/cv2/data/
+face_cascade = cv2.CascadeClassifier('/usr/lib/python3.8/site-packages/cv2/data/haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier('/usr/lib/python3.8/site-packages/cv2/data/haarcascade_eye.xml')
+
+
+
+#=================================
+# Display video capture info
+# Input: video capture object
+# Return: NA
+#=================================
+def get_cap_info(cap):
+    w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    print('width: {}\nheight: {}\nfps: {}'.format(width, height, fps))
+
+
+
+#=================================
+# Exclude face by drawing a filled rectangle over it
+# Input: frame with face visible
+# Return: edited frame with face blacked out
+#=================================
+def exclude_face(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    
+    # Draw rectangle over detected face
+    for (x, y, w, h) in faces:
+        frame = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), -1)
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = frame[y:y+h, x:x+w]
+    
+    return frame
+
 
 
 #=================================
@@ -21,26 +69,28 @@ import numpy as np
 #=================================
 def get_roi(frame):
     # Set offset (will control how big rectangle is)
-    size = 90
+    size = 60
     
     # Set points for rectangle roi (upper-left corner)
-    x1 = 50
-    y1 = 50
+    # NOTE: flipping x and y corrects drawing
+    x1 = 300
+    y1 = 90
     x2 = x1 + size
     y2 = y1 + size
     
     # Draw rectangle onto frame
-    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), thickness=1)
+    cv2.rectangle(frame, (y1, x1), (y2, x2), (0, 0, 255), thickness=1)
     
+    # Get region of interest to calc color histogram on
     roi = frame[x1+1:x2, y1+1:y2]
     return frame, roi
 
 
 
 #=================================
-# Get histogram for region of interest
+# Get histogram for region of interest using backprojection
 # Input: region of interest from captured from a frame and the current frame
-# Return: TODO
+# Return: threshold image; binary AND resulting image
 #=================================
 def get_roi_hist(frame, roi):
     # Get hsv color space images for frame and roi
@@ -68,42 +118,74 @@ def get_roi_hist(frame, roi):
 
 
 #=================================
-# Start
+# Program Start
 #=================================
-# Setup
-roi_captured = False
-
-# Get video capture object
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) # get video capture object
 
 while(True):
-    # Get individual frame (an image)
-    ret, frame = cap.read()
+    ret, frame = cap.read() # get individual frame (an image)
+    frame = exclude_face(frame) # detect and exclude face
     
-    # Display data
-    #w = cap.get(cv2.CAP_PROP_FRAME_WIDTH )
-    #h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    #fps = cap.get(cv2.CAP_PROP_FPS)
-    #print('w: {}\nh: {}\nfps: {}'.format(width, height, fps))
-    
+    #-----------------------------
     # Get roi to extract skin color
+    #-----------------------------
     if not roi_captured:
         frame, roi = get_roi(frame)
-        # TODO: continue to get histogram until user presses 's'
-        thresh, res = get_roi_hist(frame, roi)
-    #else:
-    #    print('now we dont include roi capture')
-    #    print(roi)
     
-    # Display the resulting frame
+    #-----------------------------
+    # Get threshold image from user's skin color
+    #-----------------------------
+    thresh, res = get_roi_hist(frame, roi)
+    
+    # Binarize image using skin color
+    #ret, thresh = cv2.threshold(thresh, 200, 255, cv2.THRESH_BINARY)
+    #ret, thresh = cv2.threshold(thresh, 127, 255, cv2.THRESH_TRUNC)
+    
+    '''
+    TODO: before finding contours, do the following
+    - remove noise
+    - smooth threshold image
+    - find canny edge detection
+    '''
+    # Remove noise
+    #thresh = cv2.blur(thresh,(5,5)) # blurs image significantly
+    #thresh = cv2.GaussianBlur(thresh,(5,5),0)
+    #thresh = cv2.medianBlur(thresh, 5) # gives good output
+    #thresh = cv2.bilateralFilter(thresh,9,75,75)
+    
+    '''
+    low = 150
+    high = 250
+    thresh = cv2.Canny(thresh, low, high)
+    '''
+    
+    # TODO: after performing the previous TODO ops, find contours from edge image
+    '''
+    contours, hierarchy = cv2.findContours(thresh, 1, 2)
+    cnt = contours[0]
+    M = cv2.moments(cnt) # get image moments
+    # Get centroid x and y
+    #cx = int(M['m10']/M['m00'])
+    #cy = int(M['m01']/M['m00'])
+    hull = cv2.convexHull(cnt) # get convex hull
+    size = 10
+    for i in range(len(hull)):
+        thresh = cv2.drawContours(thresh, hull, i, (255,255,0), size)
+        frame = cv2.drawContours(frame, hull, i, (255,255,0), size)
+    #'''
+    
+    #-----------------------------
+    # Display
+    #-----------------------------
     cv2.imshow('frame', frame)
-    cv2.imshow('roi', roi)
-    #cv2.imshow('thresh', thresh)
-    cv2.imshow('res', res)
-
-    # Keyboard events
-    k = cv2.waitKey(1) & 0xFF
+    #cv2.imshow('roi', roi)
+    cv2.imshow('thresh', thresh)
+    #cv2.imshow('res', res)
     
+    #-----------------------------
+    # Keyboard events
+    #-----------------------------
+    k = cv2.waitKey(1) & 0xFF
     if k == ord('s'):
         roi_captured = True
     elif k == 27: # esc key
