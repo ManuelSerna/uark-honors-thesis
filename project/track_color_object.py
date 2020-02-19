@@ -10,7 +10,7 @@
 Some notes:
 
 HSV value ranges for opencv:
-    - Hue: [0..179]
+    - Hue: [0..179] <-these are the color wheel values
     - Saturation: [0..255]
     - Value: [0..255]
 '''
@@ -28,10 +28,10 @@ from matplotlib import pyplot as plt
 # Setup
 #---------------------------------
 win = 'air-writing' # window name
-color = 'b' # default color to track is red
+color = 'g' # default color to track is red
 draw = False # flag to start/stop drawing letters
 blank_drawing = np.zeros((480, 640, 3), np.uint8) # blank image to reset drawing image
-drawing = np.zeros((480, 640, 3), np.uint8) # drawing image
+drawing = blank_drawing#np.zeros((480, 640, 3), np.uint8) # drawing image
 drawing_color = (0, 0, 255) # draw characters in this color
 
 # TODO: add counter to enumerate output images (and video?)
@@ -60,21 +60,22 @@ def get_hsv_color(color):
     hsv_color = 0
     
     # Saturation
-    lower_sat = 50
+    lower_sat = 100
     upper_sat = 255
     
     # Value
-    lower_val = 50
+    lower_val = 110
     upper_val = 255
     
+    # Choose h value based on arg given
     if color == 'r':
-        hsv_color = 0 # red too similar somtimes to skin color
+        hsv_color = 0 # red sometimes too similar to skin color and my CS jacket :-(
     elif color == 'g':
-        hsv_color = 80
+        hsv_color = 60 # this value works better against other potential common greens in the background
+        #hsv_color = 45
+        #hsv_color = 80 # works good if I have a neon-like green marker with me
     elif color == 'b':
         hsv_color = 120
-    elif color == 'p': # pink hsv = 163
-        hsv_color = 155
     
     hsv_lower = np.array([hsv_color-10, lower_sat, lower_val])
     hsv_upper = np.array([hsv_color+10, upper_sat, upper_val])
@@ -96,7 +97,6 @@ while(True):
 
     #---------------------------------
     # Track colored object for air-drawing
-    # TODO: mark and track object for drawing
     #---------------------------------
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -106,9 +106,6 @@ while(True):
     
     # Threshold the HSV image to get only blue colors
     mask = cv2.inRange(hsv, hsv_lower, hsv_upper)
-
-    # Bitwise-AND mask and original image
-    #res = cv2.bitwise_and(frame, frame, mask = mask)
     
     #---------------------------------
     # Find contours of brightly-colored drawing object
@@ -131,9 +128,10 @@ while(True):
         cv2.circle(frame, center, r, (0,255,0), 2)
         size = 4 # keep the size of the drawing circles the same regardless of contours
         
-        # If drawing flag is enabled, draw with center of circle
+        # If drawing flag is enabled, draw with respect to center of circle and overlay it on top of the current frame
         if draw:
-            cv2.circle(drawing, center, size, drawing_color, -1)
+            if r > 0:
+                cv2.circle(drawing, center, size, drawing_color, -1)
             
             # Overlay updated drawing over frame
             roi = frame # copy frame as it is the entire region of interest
@@ -169,8 +167,8 @@ while(True):
         else:
             draw = False
             cv2.imwrite('drawing.jpg', frame)
-            #drawing = blank_drawing # reset drawing image
-            drawing = np.zeros((480, 640, 3), np.uint8)
+            drawing = blank_drawing # reset drawing image
+            #drawing = np.zeros((480, 640, 3), np.uint8)
             print("  Drawing STOP.")
     elif k == ord('v'):
         print('Taking video (not actually yet)')
