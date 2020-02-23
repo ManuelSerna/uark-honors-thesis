@@ -2,26 +2,26 @@
 # Use JSON as .json files can be read by other programs and is human readable
 
 import json
-import os # able to write to directories
+import os # able to interact with directories
 
 letter = 'A'
-counter = 1
+counter = 2
 
 # Sample time series
-x = [1, 2, 3, 4, 5]
-y = [6, 7, 8, 9, 0]
+x = [2, 5, 6, 3, 1]
+y = [6, 6, 9, 5, 2]
 
 data = {}
 data['x'] = x
 data['y'] = y
 
-# write some arrays to a json file
-#'''
+# Write some arrays to a json file
 # Now with added twist of writing to a subdirectory
 here = os.path.dirname(os.path.realpath(__file__))
-subdir = letter
-out_file = "{}{}.json".format(letter, counter)
-file_path = os.path.join(here, subdir, out_file)
+subdir = 'subdir/' + letter # name of sub-directory
+out_file = "{}{}.json".format(letter, counter) # write data to this file
+file_path = os.path.join(here, subdir, out_file) # path to write file to
+print(file_path)
 
 # Check subdirectory
 if not os.path.isdir(os.path.join(here, subdir)):
@@ -31,20 +31,6 @@ if not os.path.isdir(os.path.join(here, subdir)):
 try:
     with open(file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
+    print(" Wrote to path: ", file_path)
 except IOError:
     print("Wrong path provided")
-#'''
-
-
-
-# Load some arrays from file
-'''
-file_name = "data.json"
-text = open(file_name, 'r')
-text_str = text.read()
-lists = json.loads(text_str)
-text.close()
-
-print('x time series: ', lists['x'])
-print('y time series: ', lists['y'])
-#'''

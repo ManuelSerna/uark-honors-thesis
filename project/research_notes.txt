@@ -1,0 +1,84 @@
+Observations and Notes
+
+
+
+Data Capture
+----------------------------------
+There are 26 letters in the English alphabet (only counting upper-case letters). In the Spanish alphabet, there are 7 more letters to consider, thus adding to the total of 33 distinct letters.
+
+When drawing each letter, I have to consider the following characteristics for DRAWING:
+    1. Starting (x, y) point.
+        * SOLUTION: Translate all points to (0,0)
+    2. My velocity when drawing (can be calculated by taking the difference of consecutive points).
+        * SOLUTION: TBD
+    3. What coordinates are associated with "noise"? 
+        - In other words, which parts of a given drawing are not part of the intended letter and are just strokes used to draw the remaining portions of the letter.
+        - This will be important when considering letters with accent marks.
+        * SOLUTION: TBD
+    4. The position of the drawn letters.
+        * SOLUTION: Same as #1.
+    5. How big the letter drawn is.
+        * SOLUTION: TBD
+    6. Is the letter drawn at an angle?
+        - SOLUTION: I will ignore this rule as people usually do not write letters in unusual angles.
+    - Total issues to address: 4, maybe 3.
+    
+
+For each letter, I will record x time series.
+    - Total: 33*x=y total images and time series.
+
+
+Strategy 1: tracking a brightly-colored object
+----------------------------------
+a. Procedure for drawing letter
+    1. Capture video at 30 frames per second (fps) with a resolution of 640 x 480 on my laptop camera.
+        - We also create a black 640 x 480 image to store the letter drawing in.
+    2. Capture frame, and thus we capture and process 30 frames every second.
+        - To start drawing, the user can press 'd' at any time to start drawing and again to stop. If the user is not drawing, the tracking still occurs but no drawing is done.
+    3. Given frame in BGR color space, convert to HSV color space.
+    4. Get the lower and upper hsv thresholds
+        - I have the lower limits hardcoded while the upper thresholds are the maximum values
+    5. Threshold the HSV version of the frame based on the ranges taken and get the mask, this mask will show only the marker that we will draw with.
+    6. Given the mask (which recall is a binary image), find the contours (simply put, the edges) of marker, which should be a circle.
+    7. Draw the contours on the current frame to check that we are finding the marker.
+    8. Draw the minimum enclosing circle to know where our marker is going to "draw" in the air.
+    9. If the user is drawing, given the information of the minimum enclosing circle, draw colored filled circles onto the drawing image, and impose this image onto the frame. 
+        - The (x, y) coordinates are also added to lists that store the x and y coordinates separately.
+        - The overlaying of the drawing onto the frame is done by a series of bitwise AND operations. We want the colored drawing (recall it is on a black background) to be overlayed on top of the frame.
+    10. Repeat steps 2-9 until the user presses the 'd' key to stop drawing their letter of choice.
+
+- Now, we can do two things with the data captured
+b. Store labeled data
+    1. When the user is done drawing, call the function write_data, pass it our final drawing image as well as the final time series lists x and y.
+    2. Store x and y in a Python dictionary (Python's version of a hashmap).
+    3. Store this dictionary in a JSON file in the appropriate subdirectory.
+    4. Store the drawing in a PNG image in the same directory as the JSON file.
+    5. Assign x and y to be empty and return x and y
+c. Capturing some drawing: COMING SOON
+
+
+
+Strategy 2: Histogram-based approach
+----------------------------------
+x
+
+
+
+Observations
+----------------------------------
+Tracker:
+    - Success: 
+        - The tracker in its current state is able to track my bright-green marker well. The tracker works best if the background is simple and there are no moving objects. 
+    - Backrground:
+        - If there is another bright-green object in the room it may misidentify it. Lighting using the HSV color space does mitigate the effects of lighting but too much or too little will interfere with the tracking.
+
+
+
+Definitions
+----------------------------------
+* RGB: The red, green, and blue (RGB) color space is a very widely-used color space where each color value varies from 0 to 255. Adding varying amounts of these colors allows for the creation of other colors. The OpenCV library switches the placement of red and blue and thus uses the "BGR" color space.
+
+* HSV: The hue, saturation, and value (HSV) color space is another way to represent color. It treats the hue (color) as a singular value from 0 to 359 degrees where each angle corresponds to a color. The saturation handles the intensity of the color, 0% being a gray, while 100% denotes a strong color. The value is the illumination, which ranges from 0% to 100%, and this handles the lightness. This allows the HSV color space to better handle color identification in different lighting situations.
+    - 
+
+* x

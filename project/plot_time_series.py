@@ -3,7 +3,8 @@
 import json
 import matplotlib.pyplot as plt
 
-char = 'A'
+# TODO: take in letter argument from command line
+char = 'A' # TODO: make sure to upper case input
 counter = 1
 
 # Get data from JSON file

@@ -1,9 +1,9 @@
 #*********************************
 # Honors Thesis Hand Tracking and Classification Project
-# Program: Track brightly-colored object to draw
+# Program: Track brightly-colored object to draw characters, the drawing and the time series for the x and y coordinates will be saved in a sub-directory.
 # Author: Manuel Serna-Aguilera
 # University of Arkansas, Fayetteville
-# Spring, 2020
+# Spring 2020
 #*********************************
 
 '''
@@ -13,45 +13,41 @@ HSV value ranges for opencv:
     - Hue: [0..179] <-these are the color wheel values
     - Saturation: [0..255]
     - Value: [0..255]
+    
+    Besides tracking the default hue val of 60, other values that can work are: 45, 80 (variations of green); 120 (blue)
 '''
-
-
 
 import cv2
 import json
 import matplotlib
 import numpy as np
+import os
+import sys
 
 from matplotlib import pyplot as plt
 
 
 
 #---------------------------------
-# For generating labeled data
-#---------------------------------
-counter = 0
-letter = 'B' # character being drawn (add 'a' to end to denote accent)
-
-
-
-#---------------------------------
 # Setup ("global" variables)
 #---------------------------------
-color = 'g' # default color to track is red
+counter = 0 #TODO: automate assignment of this var
+letter = (sys.argv[1]).upper() # letter to be drawn (taken in from cmd line)
 
+# Drawing-related
 draw = False # flag to start/stop drawing letters
 drawing = np.zeros((480, 640, 3), np.uint8) # drawing image
 drawing_color = (0, 0, 255) # draw characters in this color
-
-video = False # flag to enable video capture
-
-win = 'air-writing' # window name
 
 # Time series recorded here for x and y coords
 x = []
 y = []
 
-# TODO: add counter to enumerate output images (and video?)
+# Other variables
+video = False # flag to enable video capture
+win = 'air-writing' # window name
+
+# TODO?: add counter to enumerate output images (and video?)
 
 
 #---------------------------------
@@ -64,34 +60,24 @@ print("-----------------------------")
 print("    - Press 'esc' to quit the program.")
 print("    - To start drawing, press 'd', press 'd' again to stop.")
 print("=============================")
-print()
 
 
 
 #=================================
-# Return upper and lower thresholds for hsv color tracking
+# Set thresholds to filter an hsv image on
+# Return: lower and upper thresholds
 #=================================
-def get_hsv_color(color):
+def get_hsv_color():
     # Initialize hue
-    hsv_color = 0
+    hsv_color = 60 # default color-to-track is GREEN
     
-    # Saturation
+    # Saturation ranges
     lower_sat = 100
     upper_sat = 255
     
-    # Value
+    # Value ranges
     lower_val = 110
     upper_val = 255
-    
-    # Choose h value based on arg given
-    if color == 'r':
-        hsv_color = 0 # red sometimes too similar to skin color and my CS jacket :-(
-    elif color == 'g':
-        hsv_color = 60 # this value works better against other potential common greens in the background
-        #hsv_color = 45
-        #hsv_color = 80 # works good if I have a neon-like green marker with me
-    elif color == 'b':
-        hsv_color = 120
     
     hsv_lower = np.array([hsv_color-10, lower_sat, lower_val])
     hsv_upper = np.array([hsv_color+10, upper_sat, upper_val])
@@ -102,6 +88,8 @@ def get_hsv_color(color):
 
 #=================================
 # Overlay drawing on given image
+# Input: raw video frame
+# Return: camera frame with updated drawing added
 #=================================
 def overlay(img):
     roi = img # region of interest = entire given image
@@ -119,17 +107,17 @@ def overlay(img):
 
 
 #=================================
-# Draw on video frame and picture with only the drawing
+# Draw on video frame
+# Input: raw video frame, center of drawing circle, and its radius/size
+# Return: unedited frame if user is not drawing; if the drawing flag is True, then return frame with drawing overlayed (look at function "overlay")
 #=================================
-def draw_char(frame, center, r):
+def update_drawing(frame, center, r):
     if draw:
         r = 5 # radius/size of circle drawn
         
-        # Draw circles for character with constant size
+        # Draw circle and add center=(x,y) to corresponding time series
         if r > 0:
-            cv2.circle(drawing, center, r, drawing_color, -1)
-            
-            # Update time series lists
+            cv2.circle(drawing, center, r, drawing_color, -1)            
             x.append(center[0])
             y.append(center[1])
         
@@ -141,16 +129,18 @@ def draw_char(frame, center, r):
 
 
 #=================================
-# Get contours, draw them, and use them to draw the characters
+# Based on hsv image contours, draw circles on frame (if the user is drawing)
+# Input: raw video frame, contours based on the threshold mask (calculated prior to this function call)
+# Return: frame with updated drawing (other functions specifically deal with this, look at function "update_drawing")
 #=================================
-def draw_contours(frame):
+def draw_contours(frame, contours):
     if len(contours) > 0:
         cnt = contours[0] # get numpy list of contours
         contour_size = 5 # thickness of contour corners
         
         for i in range(len(cnt)):
-            frame = cv2.drawContours(frame, cnt, i, (0,255,0), contour_size)
-            #mask = cv2.drawContours(mask, cnt, i, (0,255,0), contour_size)
+            frame = cv2.drawContours(frame, cnt, i, (255,255,0), contour_size)
+            #mask = cv2.drawContours(mask, cnt, i, (255,255,0), contour_size)
         
         # Get params for min. enclosing circle, and draw
         (x, y), r = cv2.minEnclosingCircle(cnt)
@@ -159,29 +149,48 @@ def draw_contours(frame):
         cv2.circle(frame, center, r, (0,255,0), 2)
         
         # If drawing flag is enabled, draw with respect to center of circle and overlay it on top of the current frame
-        frame = draw_char(frame, center, r)
+        frame = update_drawing(frame, center, r)
     return frame
 
 
 
 #=================================
-# Save drawing as an image and write time series to file
+# Save drawing and time series to appropriate sub-directories
+# Input: video frame with drawing, x and y time series lists
+# Return: emptied times series lists (to record new drawing)
 #=================================
-def write(img, x, y):
+# TODO: import os and write time series and PNGs to sub-directories
+def write_data(img, x, y):
     global counter
     counter += 1
     
-    out_img = "{}{}.png".format(letter, counter)
-    cv2.imwrite(out_img, img) # save drawing as png
-    
-    # Write time series for x and y coords to JSON    
     data = {}
     data['x'] = x
     data['y'] = y
     
+    # Get sub-directory
+    here = os.path.dirname(os.path.realpath(__file__))
+    sub_dir = 'letters/' + letter
+    
+    # If sub-directory does not exist, make directory
+    if not os.path.isdir(os.path.join(here, sub_dir)):
+        os.mkdir(os.path.join(here, sub_dir))
+    
+    # Time series file path
     out_data = "{}{}.json".format(letter, counter)
-    with open(out_data, 'w') as file:
-        file.write(json.dumps(data, indent=4))
+    data_path = os.path.join(here, sub_dir, out_data)
+    
+    # Image path
+    out_img = "{}{}.png".format(letter, counter)
+    img_path = os.path.join(here, sub_dir, out_img)    
+    
+    # Write files to sub-directory
+    try:
+        with open(data_path, 'w') as file:
+            file.write(json.dumps(data, indent=4)) # write data
+        cv2.imwrite(img_path, img) # write image
+    except IOError:
+        print("Wrong path provided, could not write files!")
     
     # Reset and return x and y time series lists
     x = []
@@ -191,7 +200,7 @@ def write(img, x, y):
 
 
 #=================================
-# Capture video from camera
+# Start capturing video and track object to draw
 #=================================
 cap = cv2.VideoCapture(0)
 
@@ -206,15 +215,15 @@ while(True):
     #---------------------------------
     # Track colored object for air-drawing
     #---------------------------------
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # bgr -> hsv
-    hsv_lower, hsv_upper = get_hsv_color(color) # set color to threshold on
-    mask = cv2.inRange(hsv, hsv_lower, hsv_upper) # treshold hsv image based on color
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # convert bgr -> hsv
+    hsv_lower, hsv_upper = get_hsv_color() # set color to threshold on
+    mask = cv2.inRange(hsv, hsv_lower, hsv_upper) # treshold hsv image based on hsv ranges
     
     #---------------------------------
     # Find contours of brightly-colored drawing object
     #---------------------------------
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    frame = draw_contours(frame)
+    frame = draw_contours(frame, contours)
     
     #---------------------------------
     # Display images
@@ -232,14 +241,14 @@ while(True):
     if k == ord('d'):
         if not draw:
             draw = True
-            print(" started drawing")
+            print(" Start drawing.")
         else:
             draw = False
-            print(" end drawing")
-            x, y = write(drawing, x, y) # save drawing and coords to files
+            print(" End drawing. Saving data.")
+            x, y = write_data(drawing, x, y) # save drawing and coords to files
             drawing = np.zeros((480, 640, 3), np.uint8) # reset drawing image
     elif k == ord('v'):
-        print('Taking video.')
+        print(' Taking video.')
         # TODO: set flag to trigger video capture (?), update toggle flag
         #video = True
     elif k == 27: # esc key
@@ -248,7 +257,6 @@ while(True):
 # Release capture when done
 if video:
     out.release()
+
 cap.release()
 cv2.destroyAllWindows()
-
-print("Done.")
