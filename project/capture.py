@@ -243,9 +243,9 @@ while(True):
             print(" Start drawing.")
         else:
             draw = False
-            print(" End drawing for {}{}. Saving data.".format(letter, counter))
             x, y = write_data(drawing, x, y) # save drawing and coords to files
             drawing = np.zeros((480, 640, 3), np.uint8) # reset drawing image
+            print(" End drawing for {}{}. Saving data.".format(letter, counter))
     elif k == ord('v'):
         print(' Taking video.')
         # TODO: set flag to trigger video capture (?), update toggle flag
