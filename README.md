@@ -4,25 +4,25 @@ This repository contains code and data used for my undergraduate honors thesis (
 ## Objective
 The purpose of this project is to evaluate various classification methods for "air-written" letters (which I will limit to only upper-case letters for simplicity) of the Spanish alphabet. For non-Spanish speakers, this includes the 26 regular letters of the English alphabet, plus the letters Á, É, Í, Ó, Ú, Ü, and Ñ. Note that I will not include Ch, Rr, or Ll as these strings are a combination of already existing letters. I will only focus on _single_ letters.
 
+## Design
+To draw in the air, I created a program to track a brightly-colored marker, detect its contours (which should just be a circle), and thus draw colored filled circles which are overlayed on each frame from the video stream. The user presses the 'd' key to start drawing with the marker and again when they are done. The user has the option, when the shell script is executed, to record data (both time series and image), plot a certain saved letter file, and draw a letter for certain classifiers to try to identify.
+
+In the code, I will refer to the letters with accent marks as follows
+ * Á: aa
+ * É: ee
+ * Í: ii
+ * Ó: oo
+ * Ú: uu
+ * Ü: uuu
+ * Ñ: nn
+
+All other letters that are also in the English language are represented by themselves (e.g. 'a' for A).
+
+## Classification
 Here are the following classification methods I used:
  * ___COMING SOON___
 
 The rest of this document describes the directories of the project.
 
 ## Project
-This directory contains:
- * __Tracker Program__: To record data, run the shell script called ```record.sh x``` where ```x``` is the letter the user wants to draw, to label a letter that has an accent, type the character twice (e.g. ```run.sh aa``` to draw the letter 'A' with an accent mark).
-```sh
-$ # Record data for the letter n with a tilde
-$ record.sh nn
-$ # Record data for the letter m
-$ record.sh m
-$ # And so on...
-```
- * __Main Program__: This program, when executed, will allow the user to draw a letter and the program will attempt to classify what was drawn by various methods. ___COMING SOON___
- * __letters__: This is where all the letter data is stored. There are 33 subdirectories for each letter of the Spanish alphabet (including letters with accent marks).
- * __demos__: This directory contains sample images and videos of me testing the tracker and drawing.
-
-
-## Testing
-I test functionality, algorithms, and the like in this directory.
+To run the program, you must first execute ```run.sh```. Follow the prompts given by the script to record data, plot a certain letter, and classify a drawing.

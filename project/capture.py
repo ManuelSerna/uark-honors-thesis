@@ -31,7 +31,7 @@ from matplotlib import pyplot as plt
 #---------------------------------
 # Setup ("global" variables)
 #---------------------------------
-counter = 0 #TODO: automate assignment of this var
+counter = 0
 letter = (sys.argv[1]).upper() # letter to be drawn (taken in from cmd line)
 
 # Drawing-related
@@ -54,8 +54,7 @@ win = 'air-writing' # window name
 # Print user prompt
 #---------------------------------
 print("=============================")
-print("Undergraduate Honors Thesis")
-print("Color Tracker and Character Classifier")
+print("  Color Tracker and Character Classifier")
 print("-----------------------------")
 print("    - Press 'esc' to quit the program.")
 print("    - To start drawing, press 'd', press 'd' again to stop.")
@@ -182,7 +181,7 @@ def write_data(img, x, y):
     
     # Image path
     out_img = "{}{}.png".format(letter, counter)
-    img_path = os.path.join(here, sub_dir, out_img)    
+    img_path = os.path.join(here, sub_dir, out_img)
     
     # Write files to sub-directory
     try:
@@ -244,7 +243,7 @@ while(True):
             print(" Start drawing.")
         else:
             draw = False
-            print(" End drawing. Saving data.")
+            print(" End drawing for {}{}. Saving data.".format(letter, counter))
             x, y = write_data(drawing, x, y) # save drawing and coords to files
             drawing = np.zeros((480, 640, 3), np.uint8) # reset drawing image
     elif k == ord('v'):

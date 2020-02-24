@@ -24,8 +24,9 @@ When drawing each letter, I have to consider the following characteristics for D
     - Total issues to address: 4, maybe 3.
     
 
-For each letter, I will record x time series.
-    - Total: 33*x=y total images and time series.
+For each letter, I will record 9 time series.
+    - Total: 33*9=297 total images and time series.
+    - Each letter has its own subdirectory.
 
 
 Strategy 1: tracking a brightly-colored object
