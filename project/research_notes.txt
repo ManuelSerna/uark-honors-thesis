@@ -26,7 +26,7 @@ When drawing each letter, I have to consider the following characteristics for D
 
 For each letter, I will record 9 time series.
     - Total: 33*9=297 total images and time series.
-    - Each letter has its own subdirectory.
+    - Each letter has its own subdirectory. Where the accented letters will denoted as follows: Á->aa; É->ee; Í->ii; Ó->oo; Ú->uu; Ü->uuu; Ñ->nn
 
 
 Strategy 1: tracking a brightly-colored object

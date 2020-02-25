@@ -26,3 +26,4 @@ The rest of this document describes the directories of the project.
 
 ## Project
 To run the program, you must first execute ```run.sh```. Follow the prompts given by the script to record data, plot a certain letter, and classify a drawing.
+In the ```letters``` directory, you will find 33 sub-directories named after each of the letters (accented letters are named using the convention defined earlier). In each directory for each letter there are PNG and JSON files to represent the drawing and time series of the drawing, respectively.

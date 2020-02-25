@@ -71,7 +71,7 @@ do
         read letter
         echo "  Enter letter file number (0-9): "
         read number
-        local numbers='^[0-9]$' # regular expression for one number
+        numbers='^[0-9]$' # regular expression for one number
         
         if [[ $letter =~ $re ]] && [[ $number =~ $numbers ]]
         then
