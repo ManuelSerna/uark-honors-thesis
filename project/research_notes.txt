@@ -8,19 +8,25 @@ There are 26 letters in the English alphabet (only counting upper-case letters).
 
 When drawing each letter, I have to consider the following characteristics for DRAWING:
     1. Starting (x, y) point.
-        * SOLUTION: Translate all points to (0,0)
+        * SOLUTION: Translate all points to start from (0,0).
+    
     2. My velocity when drawing (can be calculated by taking the difference of consecutive points).
-        * SOLUTION: TBD
+        * SOLUTION: Dr. Gauch mentioned "unit speed" where if there are too little points, add points in the middle of consecutive points that have significant distance from them.
+    
     3. What coordinates are associated with "noise"? 
         - In other words, which parts of a given drawing are not part of the intended letter and are just strokes used to draw the remaining portions of the letter.
         - This will be important when considering letters with accent marks.
         * SOLUTION: TBD
+    
     4. The position of the drawn letters.
-        * SOLUTION: Same as #1.
+        * SOLUTION: Same as #1--translate all points to start from (0, 0).
+    
     5. How big the letter drawn is.
         * SOLUTION: TBD
+    
     6. Is the letter drawn at an angle?
         - SOLUTION: I will ignore this rule as people usually do not write letters in unusual angles.
+    
     - Total issues to address: 4, maybe 3.
     
 

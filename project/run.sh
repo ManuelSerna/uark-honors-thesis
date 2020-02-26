@@ -25,9 +25,9 @@ prompt () {
     echo "*********************************"
     echo "Actions to execute"
     echo "  1: Record data."
-    echo "  2: Plot a letter."
-    echo "  3: COMING SOON--classify air-written letter"
-    # TODO: include a practice option? Update README if I dos
+    echo "  2: Compare time series."
+    echo "  3: Classify air-written letter."
+    # TODO: include a practice option? Update README if I do
     echo "  0: Exit program."
     echo "*********************************"
     echo "Enter choice below:"
@@ -35,19 +35,25 @@ prompt () {
     return $choice
 }
 
+#=================================
+# Function: print general error message
+#=================================
 error_message () {
     echo "  Error: invalid input! Try again."
 }
 
 
-
+#---------------------------------
 # Continuosly run program until user inputs nothing or exits
+#---------------------------------
 while [ $choice != '0' ]
 do
     # First, prompt user
     prompt
     
-    # Execute programs given choice
+    #---------------------------------
+    # 1. Record data
+    #---------------------------------
     if [ $choice == '1' ]
     then
         echo ""
@@ -59,36 +65,63 @@ do
         if [[ $letter =~ $re ]]
         then
             echo "  Recording data."
-            python capture.py $letter
+            python record_data.py $letter
             echo "  Data capture done."
         else
             error_message
         fi
     
+    #---------------------------------
+    # 2. Visualize two time series
+    #---------------------------------
     elif [ $choice == '2' ]
     then
-        echo '  Select a letter to plot.'
-        read letter
-        echo "  Enter letter file number (0-9): "
-        read number
-        numbers='^[0-9]$' # regular expression for one number
+        numbers='^[1-9]$' # regular expression for one number
+        num2="" # initialize num2 to be empty
         
-        if [[ $letter =~ $re ]] && [[ $number =~ $numbers ]]
+        #.................................
+        # Prompt user
+        #.................................
+        echo "  Enter FIRST letter to plot:"
+        read letter1
+        echo "  Enter FIRST letter file number (1-9): "
+        read num1
+        
+        echo "  Enter SECOND letter to plot."
+        #echo "  Or press ENTER to skip"
+        read letter2
+        
+        # If user will enter a second letter, check that it will fall into the regular expression
+        if [[ ! -z $letter2 ]] && [[ $letter2 =~ $re ]]
+        then
+            echo "  Enter SECOND letter file number (1-9): "
+            read num2
+        else
+            echo 
+        fi
+        
+        #.................................
+        # With inputs, plot time series
+        #.................................
+        if [[ $letter1 =~ $re ]] && [[ $num1 =~ $numbers ]] && [[ $num2 =~ $numbers ]]
         then
             echo "  Plotting data."
-            python plot_data.py $letter $number
+            python visualize_time_series.py $letter1 $num1 $letter2 $num2
         else
             error_message
         fi
         
-    
+    #---------------------------------
+    # 3. Classify air-written letter
+    #---------------------------------
     elif [ $choice == '3' ]
     then
         echo '  TODO: classify drawn letter'
+        
         # TODO: include classifier program here
     fi
     
-    echo "" # filler new-lines
+    echo ""
     echo ""
     echo ""
 done
