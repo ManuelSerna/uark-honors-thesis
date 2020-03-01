@@ -81,7 +81,7 @@ int dtw(int s[], int t[])
         }
     }
     
-    //printMatrix(D);
+    printMatrix(D);
     
     return D[N][N];
 }
@@ -89,10 +89,17 @@ int dtw(int s[], int t[])
 int main()
 {
     // Random input, assume s and t to be the same length
+    // Some lists
     //int s[N] = {1, 3, 4, 9, 8, 2, 1, 5, 7, 3};
     //int t[N] = {1, 6, 2, 3, 0, 9, 4, 3, 6, 3};
-    int s[N] = {1, 4, 8, 9, 8, 4, 1, 5, 7, 3};
-    int t[N] = {1, 1, 4, 8, 9, 8, 4, 1, 5, 7};
+    
+    // Slightly offset versions of lists
+    //int s[N] = {1, 4, 8, 9, 8, 4, 1, 5, 7, 3};
+    //int t[N] = {1, 1, 4, 8, 9, 8, 4, 1, 5, 7};
+    
+    // Another couple of some lists
+    int s[N] = {1, 3, 4, 9, 8, 2, 1, 5, 7, 3};
+    int t[N] = {1, 6, 2, 3, 0, 9, 4, 3, 6, 3};
     
     int minDistance = dtw(s, t);
     

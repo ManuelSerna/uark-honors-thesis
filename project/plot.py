@@ -1,9 +1,10 @@
 #*********************************
-# Plot class: Use matplotlib to plot time series in different ways
+# Plot Class
+#   - Use matplotlib to plot time series in different ways
 # Author: Manuel Serna-Aguilera
 #*********************************
 
-import filefetch as f
+import file_io as f
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -42,12 +43,17 @@ class plot():
         
         self.compare = False
         
-        # Only if both second letter fields are populate, enable comparing
+        # Only if both second letter fields are populated, enable comparing
         if letter2 != "" and num2 != "":
             self.set_img2(letter2, num2)
     
     #---------------------------------
     # Set image 1 name and number ID manually
+    '''
+    Inputs: 
+        - l: letter character
+        - n: number identifier for specific file
+    '''
     #---------------------------------
     def set_img1(self, l, n):
         self.letter1 = l
@@ -56,8 +62,12 @@ class plot():
         self.data1 = f.get_file(l, n)
     
     #---------------------------------
-    # Set image 2 name and number ID
-    # Enable comparison
+    # Set image 2 name and number ID and enable comparison
+    '''
+    Inputs: 
+        - l: letter character
+        - n: number identifier for specific file
+    '''
     #---------------------------------
     def set_img2(self, l, n):
         if not self.compare:
@@ -71,7 +81,7 @@ class plot():
     #---------------------------------
     # Plot one letter's time series
     #---------------------------------
-    def plot_letter(self, ):
+    def plot_letter(self):
         print("  Plotting single letter")
         # TODO: plot single letter if time allows
     

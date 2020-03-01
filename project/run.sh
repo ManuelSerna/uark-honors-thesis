@@ -116,9 +116,8 @@ do
     #---------------------------------
     elif [ $choice == '3' ]
     then
+        # TODO: include classifier programs in sequence here, output only classification result
         echo '  TODO: classify drawn letter'
-        
-        # TODO: include classifier program here
     fi
     
     echo ""

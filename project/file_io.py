@@ -14,8 +14,8 @@ import os
 Input:
     - subpath: optional string for sub-directory, otherwise empty
 Return:
-    - current path (same as file) as a string
-    - sub-directory if there is one
+    - here:   current path (same as file) as a string
+    - subdir: sub-directory if there is one
 '''
 #=================================
 def get_dir(subpath=''):
@@ -29,7 +29,7 @@ def get_dir(subpath=''):
 #=================================
 # Get image
 '''
-Inputs:
+Input:
     - name: name of letter to fetch info of
     - num: "id" for specific letter
     - color: set image to a certain color (white is default)
@@ -65,9 +65,9 @@ def get_img(name, num, color='w'):
 
 
 #=================================
-# Fetch time series
+# Get time series
 '''
-Inputs:
+Input:
     - name: name of letter to fetch info of
     - num: "id" for specific letter
 Return: array that holds the x and y time series
@@ -91,3 +91,66 @@ def get_file(name, num):
     
     return [x, y]
 
+
+
+#=================================
+# Write image
+'''
+Inputs:
+    - img:  image to be saved to a PNG file
+    - name: name of letter
+    - num: "id" for specific letter
+'''
+#=================================
+def write_img(img, name, num):
+    # Get current dir
+    here, subdir = get_dir(name)
+    
+    # If sub-directory does not exist, make directory
+    if not os.path.isdir(os.path.join(here, subdir)):
+        os.mkdir(os.path.join(here, subdir))
+    
+    # Image path
+    out_img = "{}{}.png".format(name, num)
+    img_path = os.path.join(here, subdir, out_img)
+    
+    # Write to sub-directory
+    try:
+        cv2.imwrite(img_path, img)
+    except:
+        print("ERROR: could not write image.")
+
+
+
+#=================================
+# Write time series to JSON
+'''
+Inputs:
+    - name: name of letter
+    - num:  "id" for specific letter
+    - x:    x time series
+    - y:    y time series
+'''
+#=================================
+def write_json(name, num, x, y):
+    data = {}
+    data['x'] = x
+    data['y'] = y
+    
+    # Get current dir
+    here, subdir = get_dir(name)
+    
+    # If sub-directory does not exist, make directory
+    if not os.path.isdir(os.path.join(here, subdir)):
+        os.mkdir(os.path.join(here, subdir))
+    
+    # Time series file path
+    out_data = "{}{}.json".format(name, num)
+    data_path = os.path.join(here, subdir, out_data)
+    
+    # Write time series to sub-directory
+    try:
+        with open(data_path, 'w') as file:
+            file.write(json.dumps(data, indent=4)) # write data
+    except IOError:
+        print("ERROR: could not write image.")
