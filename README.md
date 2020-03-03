@@ -20,7 +20,7 @@ All other letters that are also in the English language are represented by thems
 
 ## Classification
 Here are the following classification methods I used:
- * ___COMING SOON___
+ * __Dynamic Time Warping__
 
 The rest of this document describes the directories of the project.
 

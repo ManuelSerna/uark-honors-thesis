@@ -82,8 +82,13 @@ First round of data capturing (did not include accent-marked letters):
     - The letter J had the most variation thus far.
     * At times when I was recording, the tracker seemed to stop tracking for several frames (at most half a second) and thus no data was captured for a small time frame. This resulted in the images (and time series) having "gaps" when they were drawn. This is most likely due to the lighting not being optimal enough at the time of recording.
 
+Terms:
+    - Captured image and time series: this is the drawing and associated data that was just captured which represents the air-written letter.
+    - Query image and time series: this is the fetched image and associated time series.
+
 Time series analysis
-    - The start-at-zero, equalize time series lengths, and map-to-scale operations are independent. They will not interfere with eachother.
+    - The start-at-zero, equalize time series lengths, and map-to-scale operations should not interfere with each other. I apply each of these transformations to the time series for the captured and query time series.
+    - I first apply dynamic time warping which returns the minimum edit distance between two time series t1 and t2.
 
 
 Definitions
