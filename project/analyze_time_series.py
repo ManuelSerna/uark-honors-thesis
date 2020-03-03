@@ -8,10 +8,12 @@ import numpy as np
 import math
 import sys
 
+import capture as cp
 import file_io as f
 import plot
 
 infty = 999999
+letters = ['A', 'AA', 'B', 'C', 'D', 'E', 'EE', 'F', 'G', 'H', 'I', 'II', 'J', 'K', 'L', 'M', 'N', 'NN', 'O', 'OO', 'P', 'Q', 'R', 'S', 'T', 'U', 'UU', 'UUU', 'V', 'W', 'X', 'Y', 'Z']
 
 #=================================
 # Move start point to (0,0) and translate entire time series
@@ -27,79 +29,136 @@ def start_zero(t):
 
 
 #=================================
-# Insert estimated elements in between consecutive elements in a given list
+# Increase length of time series by estimating distance between two consecutive points
 '''
 Input:
-    - og_list: original list
-    - step: jump by this many elements in og_list to spread insertions evenly
-    - insertions: number of times left to insert
+    - t: some time series
+    - new_length: desired length for new time series
 Return:
-    - list with new length
-NOTE: function may be called recursively in order to account for large difference in drawing velocities between the two letters
+    - s: newly-sized time series
 '''
 #=================================
-def insert_between(og_list, step, insertions):
-    new_list = og_list[:1]
-    prev = new_list[0]
+def increase_len(t, new_length):
+    s = [t[0]]
+    l = len(t)
+    diff = new_length - l
+    step = int(math.floor(new_length/diff)-1)
     
-    # Construct new list with added elements
-    for i in og_list[1:]:
-        # Add new element according to step size
-        if len(new_list) % step == 0 and insertions > 0:
-            new = int((i+prev)/2) # estimate intermediate element
-            new_list.append(new)
-            insertions -= 1 # one less insertion to make
+    if step <= 1:
+        step = 2
+    
+    while diff > 0:
+        for i in range(1, l):
+            current_val = t[i]
+            if i % step == 0 and diff > 0:
+                prev_val = t[i-1]
+                est_val = int((current_val + prev_val)/2)
+                
+                s.append(est_val)
+                s.append(current_val)
+                
+                diff -= 1
+            else:
+                s.append(current_val)
         
-        new_list.append(i)
-        prev = i
-    
-    # If there are still insertions to make, make a recursive call to keep inserting
-    if insertions > 0:
-        new_list = insert_between(new_list, step, insertions)
-    
-    return new_list
+        if diff == 1:
+            # Interpolate between first and second elements
+            est_val = int((s[0]+s[1])/2)
+            s.insert(1, est_val)
+            diff -= 1
+        
+        # Recalcuate step size according to new output time series size
+        if diff > 0:
+            t = s # reference s as t now
+            s = [t[0]] # reset s
+            l = len(t)
+            diff = new_length - l
+            step = int(math.floor(new_length/diff)-1)
+            
+            if step <= 1:
+                step = 2
+    return s
 
 
 
 #=================================
-# Equalize the length between two time series t1 and t2 based on the larger one
+# Reduce length of time series by estimating distance between two consecutive points
 '''
-Input: two time series
-Return: 
-    - if, somehow, t1 and t2 are the same length, return the input time series
-    - two time series, now equal in length
-        NOTE: function insert_between may be called recursively to keep filling in elements if the difference between the lengths is greater than the length of the smaller list
+Input:
+    - t: some time series
+    - new_length: desired length for new time series
+Return:
+    - s: newly-sized time series
 '''
 #=================================
-def eq_len(t1, t2):
-    # Get lengths of each time series
-    l1 = len(t1)
-    l2 = len(t2)
+def decrease_len(t, new_length):
+    s = [t[0]] # reduced time series s
+    l = len(t)
+    diff = l - new_length
+    step = int(math.floor(l/diff)-1)
     
-    # Calculate how often to insert new elements into shorter list
-    min_len = min(l1, l2)
-    max_len = max(l1, l2)
+    if step <= 1:
+        step = 2
     
-    # Avoid division by zero error
-    diff = max_len - min_len
-    if diff == 0:
-        return t1, t2
-    else:
-        step = int(math.ceil(min_len/diff))
+    while diff > 0:
+        for i in range(1, l):
+            current_val = t[i]
+            if i % step == 0 and diff > 0:
+                prev_val = t[i-1]
+                est_val = int((current_val + prev_val)/2)
+                
+                x = s.pop(-1)
+                s.append(est_val)
+                
+                diff -= 1
+            else:
+                s.append(current_val)
+                
+        if diff == 1:
+            # Interpolate between first and second elements
+            est_val = int((s[0]+s[1])/2)
+            s.insert(1, est_val)
+            diff -= 1
+        
+        # Recalcuate step size according to new output time series size
+        if diff > 0:
+            t = s # reference s as t now
+            s = [t[0]] # reset s
+            l = len(t)
+            diff = l - new_length
+            step = int(math.floor(l/diff)-1)
+            
+            if step <= 1:
+                step = 2
+    return s
+
+
+
+#=================================
+# Set length of time series t to some set number
+'''
+Input:
+    - t: some time series
+    - new_length: shrink or grow list to be this new length
+Output:
+    - t: modified time series of length 'new_length'
+'''
+#=================================
+def set_length(t, new_length):
+    l = len(t)
     
-    # Lengthen the shorter list to be as long as the longer list
-    if l1 == max_len:
-        t2 = insert_between(t2, step, diff)
-    else:
-        t1 = insert_between(t1, step, diff)
+    if l < new_length:
+        t = increase_len(t, new_length)
+    elif l > new_length:
+        t = decrease_len(t, new_length)
     
-    return t1, t2
+    return t
 
 
 
 #=================================
 # Scale time series t to be in the some range
-# Input: time series t
+# Input: some time series t
 # Return: scaled time series t now in range [outmin...outmax]
 #=================================
 def scale(t):
@@ -120,8 +179,12 @@ def scale(t):
 
 #=================================
 # Dynamic Time Warping: find minimum edit distance
-# Input: two time series t1 and t2
-# Return: minimum edit distance--a measure of similarity (the lower=the more similar the two time series)
+'''
+Input:
+    - t1 and t2: two time series to compare
+Return:
+    - result[n-1][m-1]: minimum edit distance--a measure of similarity (the lower=the more similar the two time series)
+'''
 #=================================
 def dtw(t1, t2):
     # Get lengths n and m
@@ -141,6 +204,7 @@ def dtw(t1, t2):
     for i in range(1, n):
         for j in range(1, m):
             result[i][j] = infty
+    
     result[0][0] = 0
     result[1][1] = 0
     
@@ -160,62 +224,122 @@ def dtw(t1, t2):
     return result[n-1][m-1]
 
 
+
+#=================================
+# Function for data capture
+'''
+Return:
+    - drawing: image that now holds air-drawn letter
+    - x: populated time series for x coordinates
+    - y: populated time series for y coordinates
+'''
+#=================================
+def capture():
+    drawing = np.zeros((480, 640, 3), np.uint8)
+    x = []
+    y = []
+    
+    cp.prompt()
+    draw = False
+    cap = cv2.VideoCapture(0)
+    
+    while(True):
+        # Get current frame to extract info and modify it
+        ret, frame = cap.read()
+        drawing, frame, x, y = cp.process_frame(draw, drawing, frame, x, y)
+        
+        # Keyboard events
+        k = cv2.waitKey(1) & 0xFF
+        
+        if k == ord('d'):
+            if not draw:
+                draw = True
+                print(" Start drawing.")
+            else:
+                draw = False
+                cap.release()
+                cv2.destroyAllWindows()
+                print(" Capture complete.")
+                break
+    return drawing, x, y
+
+
+
+#================================
+# Function to contain time series analysis
+'''
+Input:
+    - letter: letter to query
+    - num: number identifier for query
+Return:
+    - calculated minimum edit distance for x time series
+    - calculated minimum edit distance for y time series
+'''
+#================================
+def compare_letter(letter, num):
+    global captured_x, captured_y
+    
+    query = f.get_file(letter, num)
+    query_x = query[0]
+    query_y = query[1]
+
+    #---------------------------------
+    # Operations on time series
+    #---------------------------------
+    # 1) 
+    # Translate time series to start at zero
+    captured_x = start_zero(captured_x)
+    captured_y = start_zero(captured_y)
+    query_x = start_zero(query_x)
+    query_y = start_zero(query_y)
+
+    # 2)
+    # Scale time series to some common output range
+    captured_x = scale(captured_x)
+    captured_y = scale(captured_y)
+    query_x = scale(query_x)
+    query_y = scale(query_y)
+
+    # 3)
+    # Force x and y time series to be the same length
+    new_length = 175
+    captured_x = set_length(captured_x, new_length)
+    captured_y = set_length(captured_y, new_length)
+    query_x = set_length(query_x, new_length)
+    query_y = set_length(query_y, new_length)
+    
+    #plot.overlay_plots(x1=captured_x, y1=captured_y, x2=query_x, y2=query_y)
+    
+    #---------------------------------
+    # Calculate minimum edit distance for x and y time series
+    #---------------------------------
+    distancex = dtw(captured_x, query_x)
+    distancey = dtw(captured_y, query_y)
+    threshold = 450 # set threshold for maximum similarity
+    
+    return distancex, distancey
+
+
+
 #=================================
 # Start
 #=================================
-# Specify which letter to plot from cmd line
-letter1 = (sys.argv[1]).upper()
-num1 = sys.argv[2]
-letter2 = (sys.argv[3]).upper()
-num2 = sys.argv[4]
+# Capture air-drawn letter
+drawing, captured_x, captured_y = capture()
 
-# Create plot object
-p = plot.plot(letter1, num1, letter2, num2)
+# Store minimum distances for x and y
+minx = infty
+miny = infty
+match = '' # closest match
 
-# Get time series
-x1 = p.data1[0]
-y1 = p.data1[1]
-x2 = p.data2[0]
-y2 = p.data2[1]
+for letter in letters:
+    for num in range(1, 10):
+        #print('EVALUATING {}{}'.format(letter, num))
+        dx, dy = compare_letter(letter, num)
+        if minx > dx and miny > dy:
+            minx = dx
+            miny = dy
+            match = letter
+            #print('\tbest match: {}{}'.format(letter, num))
 
-
-#---------------------------------
-# Operations on time series
-#---------------------------------
-# 1) 
-# Translate time series to start at zero
-x1 = start_zero(x1)
-y1 = start_zero(y1)
-x2 = start_zero(x2)
-y2 = start_zero(y2)
-
-# 2)
-# Force x and y time series to be the same length
-x1, x2 = eq_len(x1, x2)
-y1, y2 = eq_len(y1, y2)
-
-# 3)
-# Scale time series to some common out range
-x1 = scale(x1)
-y1 = scale(y1)
-x2 = scale(x2)
-y2 = scale(y2)
-
-# 4)
-# Calculate minimum edit distance
-distancex = dtw(x1, x2)
-distancey = dtw(y1, y2)
-print("X min edit distance: ", distancex)
-print("Y min edit distance: ", distancey)
-
-
-
-# Set modified time series in plot object
-p.data1[0] = x1
-p.data1[1] = y1
-p.data2[0] = x2
-p.data2[1] = y2
-
-# Display plot
-p.overlay_plots()
-p.show()
+print('  DTW best match: {}'.format(match))

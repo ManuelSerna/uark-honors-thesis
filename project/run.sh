@@ -3,7 +3,7 @@
 # Program: shell script to run the following programs based on user input
 #   - capture.py-- record labeled data for a specified letter
 #   - plot_data.py-- allows user to plot the time series for a specified letter
-#   - TODO: -- captures air-written letter and classifies letter with various methods
+#   - analyze_time_series.py-- analyze time series to classify a letter
 # Author: Manuel Serna-Aguilera
 # University of Arkansas, Fayetteville
 # Spring 2020
@@ -116,8 +116,8 @@ do
     #---------------------------------
     elif [ $choice == '3' ]
     then
-        # TODO: include classifier programs in sequence here, output only classification result
         echo '  TODO: classify drawn letter'
+        python analyze_time_series.py
     fi
     
     echo ""

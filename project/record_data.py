@@ -5,15 +5,11 @@
 #*********************************
 
 import cv2
-import json
-import matplotlib
 import numpy as np
 import sys
 
 import capture as cp
 import file_io as f
-
-from matplotlib import pyplot as plt
 
 #---------------------------------
 # Setup

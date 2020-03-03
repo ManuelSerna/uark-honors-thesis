@@ -17,6 +17,7 @@ except IndexError:
     print("  No second letter provided.")
 
 # Create plot object
-p = plot.plot(letter1, num1, letter2, num2)
-p.overlay_plots()
-p.show()
+#p = plot.plot(letter1, num1, letter2, num2)
+#p.overlay_plots()
+#p.show()
+print('use new plot functionality')

@@ -201,7 +201,7 @@ def process_frame(draw, drawing, frame, x, y):
     cv2.imshow('Air-written Letter', drawing)
     #cv2.imshow('mask', mask) # see what the color thresholding is keeping
     
-    return drawing, frame, x, y # TODO: update returns
+    return drawing, frame, x, y
 
 
 

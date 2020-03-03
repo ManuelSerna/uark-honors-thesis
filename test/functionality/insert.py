@@ -12,6 +12,7 @@ step = 3
 
 # Input: original list
 # Return: modified lengthened list
+'''
 def insert_between(og_list, step):
     mod_list = og_list[:1]
     prev = mod_list[0]
@@ -33,7 +34,7 @@ def insert_between(og_list, step):
         prev = i
     
     return mod_list
-
+'''
 
 
 # TODO 2: make the lists the same length, only then can I do a proper scaling
