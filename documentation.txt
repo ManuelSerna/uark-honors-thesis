@@ -1,3 +1,0 @@
-Documentation of the project
-
-TODO: when files are finalized, document their function here
