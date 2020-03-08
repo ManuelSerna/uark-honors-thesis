@@ -122,3 +122,61 @@ def overlay_plots(img1=np.zeros((480, 640, 3), np.uint8), x1=[], y1=[], img2=np.
     
     print("  Displaying overlayed plots. Press 'q' to resume.")
     plt.show()
+
+#=================================
+# Overlay the time series for two letters
+'''
+Input:
+    - letter1: character for first letter to plot
+    - num1: number identifier for first letter
+    - letter2: character for second letter to plot
+    - num2: number identifier for second letter
+Return: nothing
+'''
+#=================================
+def overlay_plots(letter1, num1, letter2, num2):
+    print("  Overlay time series plots.")
+    
+    query1 = f.get_file(letter1, num1)
+    x1 = query1[0]
+    y1 = query1[1]
+    img1 = f.get_img(letter1, num1, 'r')
+    
+    query2 = f.get_file(letter2, num2)
+    x2 = query2[0]
+    y2 = query2[1]
+    img2 = f.get_img(letter2, num2, 'c')
+    
+    # Stack time series and images into two columns
+    fig, axs = plt.subplots(constrained_layout = False)
+    spec = gridspec.GridSpec(nrows = 3, ncols = 2, figure=fig)
+    axs.yaxis.set_major_locator(plt.NullLocator())
+    axs.xaxis.set_major_formatter(plt.NullFormatter())
+    fig.suptitle("Compare {}{} and {}{}".format(letter1, num1, letter2, num2))
+    
+    # Letter 1
+    l1 = fig.add_subplot(spec[0, 0])
+    l1.imshow(img1, cmap="hot")
+    l1.yaxis.set_major_locator(plt.NullLocator())
+    l1.xaxis.set_major_formatter(plt.NullFormatter())
+    
+    # Letter 2
+    l2 = fig.add_subplot(spec[0, 1])
+    l2.imshow(img2, cmap="hot")
+    l2.yaxis.set_major_locator(plt.NullLocator())
+    l2.xaxis.set_major_formatter(plt.NullFormatter())
+    
+    # x time series
+    xt = fig.add_subplot(spec[1, :])
+    xt.set(ylabel="x time series")
+    xt.plot(x1)
+    xt.plot(x2, 'tab:red')
+    
+    # y time series
+    yt = fig.add_subplot(spec[2, :])
+    yt.set(ylabel="y time series")
+    yt.plot(y1)
+    yt.plot(y2, 'tab:red')
+    
+    print("  Displaying overlayed plots. Press 'q' to resume.")
+    plt.show()
