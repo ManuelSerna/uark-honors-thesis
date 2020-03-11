@@ -22,6 +22,8 @@ HSV value ranges for opencv:
 import cv2
 import numpy as np
 
+import file_io as f
+
 
 
 #=================================
@@ -30,7 +32,7 @@ import numpy as np
 #=================================
 def prompt():
     print("=============================")
-    print("  Color Tracker and Character Classifier")
+    print("  Color-Marker Tracker")
     print("-----------------------------")
     print("    - Press 'esc' to quit the program.")
     print("    - To start drawing, press 'd', press 'd' again to stop.")
@@ -224,3 +226,82 @@ def reset(drawing, x, y):
     x = []
     y = []
     return drawing, x, y
+
+
+
+#=================================
+# Function for data capture
+'''
+Input:
+    - letter: letter to be recorded (specified by user)
+Flags:
+    - video: set true to save capture session
+    - record: set true to record data
+Return:
+    - drawing: image that now holds air-drawn letter
+    - x: populated time series for x coordinates
+    - y: populated time series for y coordinates
+'''
+#=================================
+def capture(letter = "", recording = False, video=False):
+    # Drawing variables
+    counter = 0 # keeps track of letter identifier
+    draw = False
+    drawing = np.zeros((480, 640, 3), np.uint8)
+    
+    # Create empty time series
+    x = []
+    y = []
+    
+    # Begin video capture
+    cap = cv2.VideoCapture(0)
+    
+    if video:
+        fourcc = cv2.VideoWriter_fourcc(*'XVID') # video codec
+        video_file = 'recording-{}.avi'.format(letter)
+        out = cv2.VideoWriter(video_file, fourcc, 20.0, (640,480))
+    
+    prompt()
+    
+    while(True):
+        # Get current frame to extract info and modify it
+        ret, frame = cap.read()
+        drawing, frame, x, y = process_frame(draw, drawing, frame, x, y)
+        
+        # Save frame in video
+        if video:
+            out.write(frame)
+        
+        # Keyboard events
+        k = cv2.waitKey(1) & 0xFF
+        
+        if k == ord('d'):
+            if not draw:
+                draw = True
+                print(" Start drawing.")
+            else:
+                draw = False
+                print(" Capture complete.")
+                if recording:
+                    counter += 1
+                    f.write_img(drawing, letter, counter)
+                    f.write_json(letter, counter, x, y)
+                    drawing, x, y = reset(drawing, x, y)
+                else:
+                    break
+        elif k == 27:
+            print(" Exiting capture procedure.")
+            break # esc key
+    
+    # Release capture when done
+    if video:
+        out.release()
+    
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    # Return drawing data if not recording
+    if recording:
+        return
+    else:
+        return drawing, x, y

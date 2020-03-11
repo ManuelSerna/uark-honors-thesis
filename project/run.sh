@@ -106,7 +106,7 @@ do
         if [[ $letter1 =~ $re ]] && [[ $num1 =~ $numbers ]] && [[ $num2 =~ $numbers ]]
         then
             echo "  Plotting data."
-            python visualize_time_series.py $letter1 $num1 $letter2 $num2
+            python plot_data.py $letter1 $num1 $letter2 $num2
         else
             error_message
         fi
@@ -116,8 +116,8 @@ do
     #---------------------------------
     elif [ $choice == '3' ]
     then
-        echo '  TODO: classify drawn letter'
-        python analyze_time_series.py
+        echo "  Classifying data."
+        python classify_data.py
     fi
     
     echo ""
