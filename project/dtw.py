@@ -1,11 +1,7 @@
 #*********************************
-# Classifier: Time series of letters using dynamic time warping
+# Classifier: Dynamic Time Warping
 # Author: Manuel Serna-Aguilera
 #*********************************
-
-infty = 999999
-
-
 
 #=================================
 # Dynamic Time Warping: find minimum edit distance
@@ -16,6 +12,8 @@ Return:
     - result[n-1][m-1]: minimum edit distance--a measure of similarity (the lower the result, the more similar the two time series are)
 '''
 #=================================
+infty = 999999
+
 def dtw(t1, t2):
     # Get lengths n and m
     n = len(t1)+1

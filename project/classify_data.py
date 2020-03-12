@@ -4,8 +4,10 @@
 # Author: Manuel Serna-Aguilera
 #*********************************
 
-import capture as cp
 import dtw
+import knn
+
+import capture as cp
 import file_io as f
 import time_series as ts
 
@@ -23,7 +25,7 @@ miny = infty # min edit dist for y
 dtw_match = ''
 threshold = 450
 
-# TODO: knn variables
+
 
 # Capture air-drawn letter and apply time series modifications
 drawing, captured_x, captured_y = cp.capture()
@@ -37,7 +39,6 @@ for letter in letters:
     query_x = ts.apply_all(query[0])
     query_y = ts.apply_all(query[1])
     
-    #dx, dy = compare_letter(letter, 1)
     # Calculate minimum edit distances for x and y time series
     dx = dtw.dtw(captured_x, query_x)
     dy = dtw.dtw(captured_y, query_y)
@@ -47,7 +48,10 @@ for letter in letters:
         miny = dy
         dtw_match = letter
 
+# Perform k-nearest neighbors classification
+knn_match = knn.knn(captured_x, captured_y, letters)
+
 # Print matches for classifiers
-print("  Best Matches.")
-print("  DTW: {}".format(dtw_match))
-# TODO: print best matches from the other classifiers here
+print("  Best Matches:")
+print("\tDTW: {}".format(dtw_match))
+print("\tKNN: {}".format(knn_match))
