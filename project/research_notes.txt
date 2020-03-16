@@ -81,6 +81,7 @@ First round of data capturing (did not include accent-marked letters):
     - The letter E was by far the most difficult to draw.
     - The letter J had the most variation thus far.
     * At times when I was recording, the tracker seemed to stop tracking for several frames (at most half a second) and thus no data was captured for a small time frame. This resulted in the images (and time series) having "gaps" when they were drawn. This is most likely due to the lighting not being optimal enough at the time of recording.
+    * TODO: record more data, at least 9 more for each letter, try to make these more uniform in terms of how they're drawn.
 
 Terms:
     - Captured image and time series: this is the drawing and associated data that was just captured which represents the air-written letter.
@@ -88,8 +89,14 @@ Terms:
 
 Time series analysis
     - The start-at-zero, equalize time series lengths, and map-to-scale operations should not interfere with each other. I apply each of these transformations to the time series for the captured and query time series.
-    - I first apply dynamic time warping which returns the minimum edit distance between two time series t1 and t2.
+    - Dynamic time warping is my time series-based classifier
 
+Machine learning classifiers
+    - K-nearest neighbors (knn)
+        - One thing I noticed that could be a problem is when the set of k nearest neighbors is multimodal, that is, the mode for two or more letters is the same. Right now I do not have any procedure to account for that.
+    - Nearest centroid
+        - Very close in terms of implementation to knn
+    - Convolutional neural network: TODO
 
 Definitions
 ----------------------------------

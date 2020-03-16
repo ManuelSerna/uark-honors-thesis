@@ -20,7 +20,8 @@ def dtw(t1, t2):
     m = len(t2)+1
     
     # Create (n+1 x m+1) list and zero-initialize
-    result = [[0 for i in range(n)] for j in range(m)]
+    #result = [[0 for i in range(n)] for j in range(m)]
+    result = [[0 for j in range(m)] for i in range(n)]
     
     # Fill in 0th row and 0th column to have t2's and t1's elements respective as initial values for the algorithm to work
     for i in range(0, n-1):

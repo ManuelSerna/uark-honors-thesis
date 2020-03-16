@@ -50,8 +50,8 @@ while(True):
     
     w = cap.get(cv2.CAP_PROP_FRAME_WIDTH )
     h = cap.get(cv2.CAP_PROP_FRAME_HEIGHT )
-    #fps = cap.get(cv2.CAP_PROP_FPS)
-    #print('w: {}\nh: {}\nfps: {}'.format(width, height, fps))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    print('w: {}\nh: {}\nfps: {}'.format(w, h, fps))
     
     # Get roi to extract skin color
     # For simplicity, use the center
