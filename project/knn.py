@@ -16,7 +16,7 @@ import time_series as ts
 # K-Nearest Neighbors: find the most closest neighbors of the same class
 '''
 Input:
-    - Captured letter time series cx and cy
+    - Captured letter time series tx and ty
     - letters: list of letters to iterate over
     - k: number of neighbors to consider (default=TODO)
 Return:
@@ -27,7 +27,7 @@ Return:
 def avg(t):
     return int(sum(t)/len(t)) # average of array
 
-def knn(cx, cy, letters, k=8):
+def knn(tx, ty, letters, k=24):
     l = len(letters)
     
     # Create dictionary to store the distances
@@ -36,8 +36,8 @@ def knn(cx, cy, letters, k=8):
     distances = {}
     
     # Use time series x and y component averages to get sample point
-    cx = avg(cx)
-    cy = avg(cy)
+    cx = avg(tx)
+    cy = avg(ty)
     
     for i in range(l):
         for j in range(1, 10):

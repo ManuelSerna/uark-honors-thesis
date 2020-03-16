@@ -1,5 +1,5 @@
 #*********************************
-# Module: Separate getter files for time series (in JSON) and PNG images
+# Module: Write and read files
 # Author: Manuel Serna-Aguilera
 #*********************************
 
