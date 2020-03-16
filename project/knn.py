@@ -12,22 +12,22 @@ import time_series as ts
 
 
 
+def avg(a):
+    return int(sum(a)/len(a)) # average of elements in an array a
+
 #=================================
 # K-Nearest Neighbors: find the most closest neighbors of the same class
 '''
 Input:
-    - Captured letter time series tx and ty
+    - tx, ty: captured letter time series
     - letters: list of letters to iterate over
-    - k: number of neighbors to consider (default=TODO)
+    - n: number of samples for each class
 Return:
-    - the mode of k closest neighbors
+    - best_match: mode of k closest neighbors
 '''
 #=================================
-
-def avg(t):
-    return int(sum(t)/len(t)) # average of array
-
-def knn(tx, ty, letters, k=24):
+def knn(tx, ty, letters, n):
+    k = 2*n-1 # k neighbors to consider
     l = len(letters)
     
     # Create dictionary to store the distances

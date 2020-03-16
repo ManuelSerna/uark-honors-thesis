@@ -6,6 +6,7 @@
 
 import dtw
 import knn
+import nc
 
 import capture as cp
 import file_io as f
@@ -17,6 +18,7 @@ import time_series as ts
 # Start
 #=================================
 infty = 999999
+n = 9 # number of samples currently recorded for each letter class
 all_letters = ['A', 'AA', 'B', 'C', 'D', 'E', 'EE', 'F', 'G', 'H', 'I', 'II', 'J', 'K', 'L', 'M', 'N', 'NN', 'O', 'OO', 'P', 'Q', 'R', 'S', 'T', 'U', 'UU', 'UUU', 'V', 'W', 'X', 'Y', 'Z']
 no_accents = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
@@ -51,10 +53,13 @@ for letter in all_letters:
         dtw_match = letter
 
 # Perform k-nearest neighbors classification
-knn_match = knn.knn(captured_x, captured_y, all_letters)
-#knn_match = knn.knn(captured_x, captured_y, no_accents)
+knn_match = knn.knn(captured_x, captured_y, all_letters, n)
+
+# Perform nearest centroid classification
+nc_match = nc.nearest_centroid(captured_x, captured_y, all_letters, n)
 
 # Print matches for classifiers
 print("  Best Matches:")
 print("\tDTW: {}".format(dtw_match))
 print("\tKNN: {}".format(knn_match))
+print("\tCN: {}".format(nc_match))

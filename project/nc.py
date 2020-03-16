@@ -1,0 +1,75 @@
+#*********************************
+# Classifier: Nearest Centroid
+# Author: Manuel Serna-Aguilera
+#*********************************
+
+import file_io as f
+import time_series as ts
+
+
+
+infty = 999999
+n = 9 # number of samples per class
+
+def avg(a):
+    return int(sum(a)/len(a)) # average of elements in an array a
+
+#=================================
+# Nearest Centroid: find the centroid/mean that most closely matches the captured data's centroid/mean
+'''
+Input:
+    - tx, ty: captured letter time series
+    - letters: list of letters to iterate over
+    - n: number of samples for each class
+Return:
+    - best_match: the closest centroid to captured centroid
+'''
+#=================================
+def nearest_centroid(tx, ty, letters, n):
+    l = len(letters)
+    
+    # Create dictionary to store centroid/mean location for each letter class
+    # Key: letter (class)
+    # Value: coordinates for mean/centroid, this is a tuple (x, y) to hold the x and y coordinates
+    centroids = {}
+    
+    # Calculate mean/centroid for all class labels
+    for i in range(l):
+        # Arrays to hold average x and y values of all letters of the same class
+        ax = []
+        ay = []
+        
+        for j in range(1, n+1):
+            # Query current letter data and get the average x and y values to represent the point for the sample
+            query = f.get_file(letters[i], j)
+            qx = avg(ts.apply_all(query[0]))
+            qy = avg(ts.apply_all(query[1]))
+            
+            # Add average of individual sample for current class
+            ax.append(qx)
+            ay.append(qy)
+            
+        # Store centroid (x, y) for current class
+        class_x = avg(ax)
+        class_y = avg(ay)
+        centroids[letters[i]] = (class_x, class_y)
+    
+    # Calculate average of captured data
+    captured_x = avg(tx)
+    captured_y = avg(ty)
+    
+    # Compute minimum distance between captured data and some class
+    min_dx = infty
+    min_dy = infty
+    best_match = 'na'
+    
+    for key, value in centroids.items():
+        dx = abs(value[0]-captured_x)
+        dy = abs(value[1]-captured_y)
+        
+        if dx < min_dx and dy < min_dy:
+            min_dx = dx
+            min_dy = dy
+            best_match = key
+    
+    return best_match
