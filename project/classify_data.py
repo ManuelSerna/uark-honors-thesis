@@ -40,8 +40,10 @@ for letter in all_letters:
 #for letter in no_accents:
     # Query data for current labeled letter
     query = f.get_file(letter, 1)
-    query_x = ts.apply_all(query[0])
-    query_y = ts.apply_all(query[1])
+    query_x = query[0]
+    query_y = query[1]
+    #query_x = ts.apply_all(query[0])
+    #query_y = ts.apply_all(query[1])
     
     # Calculate minimum edit distances for x and y time series
     dx = dtw.dtw(captured_x, query_x)

@@ -93,6 +93,7 @@ Time series analysis
 
 Machine learning classifiers
     - K-nearest neighbors (knn)
+        - This algorithm works best if all the classes are huddled together and as away from other class points as possible. If there is overlap, there will be problems with the classification.
         - One thing I noticed that could be a problem is when the set of k nearest neighbors is multimodal, that is, the mode for two or more letters is the same. Right now I do not have any procedure to account for that.
     - Nearest centroid
         - Very close in terms of implementation to knn

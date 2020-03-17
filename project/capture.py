@@ -23,6 +23,7 @@ import cv2
 import numpy as np
 
 import file_io as f
+import time_series as ts
 
 
 
@@ -106,7 +107,7 @@ Outputs:
 def update_drawing(center, draw, drawing, frame, r, x, y):
     drawing_color = (0, 0, 255)
     if draw:
-        r = 5 # radius/size of circle drawn
+        r = 7 # radius/size of circle drawn
         
         # Draw circle and add center=(x,y) to corresponding time series
         if r > 0:
@@ -285,7 +286,11 @@ def capture(letter = "", recording = False, video=False):
                 if recording:
                     counter += 1
                     f.write_img(drawing, letter, counter)
-                    f.write_json(letter, counter, x, y)
+                    
+                    # Write unmodified and modified time series
+                    f.write_json(name=letter, num=counter, x=x, y=y, og=True)
+                    f.write_json(letter, counter, ts.apply_all(x), ts.apply_all(y))
+                    
                     drawing, x, y = reset(drawing, x, y)
                 else:
                     break
