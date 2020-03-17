@@ -129,6 +129,7 @@ def write_img(img, name, num):
     # Image path
     out_img = "{}{}.png".format(name, num)
     img_path = os.path.join(here, subdir, out_img)
+    print('Wrote img to: ', img_path)
     
     # Write to sub-directory
     try:
@@ -164,7 +165,8 @@ def write_json(name='', num='', x=[], y=[], og=False):
     # Time series file path
     out_data = "{}{}.json".format(name, num)
     data_path = os.path.join(here, subdir, out_data)
-    print(data_path)
+    print('Wrote data to: ', data_path)
+    
     # Write time series to sub-directory
     try:
         with open(data_path, 'w') as file:
