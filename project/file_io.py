@@ -47,13 +47,13 @@ def get_dir(img=True, og=False, letter_dir=''):
 Input:
     - name: name of letter to fetch info of
     - num: "id" for specific letter
-    - color: set image to a certain color (white is default)
+    - color: set image to a certain color (defaulted to empty string to represent white)
 Return: image (3D cv2 array)
 
 NOTE: Assume letters are drawn in BGR where red = 255, blue and green are 0
 '''
 #=================================
-def get_img(name, num, color='w'):
+def get_img(name, num, color=''):
     # Get current dir
     here, subdir = get_dir(letter_dir=name)
     
@@ -62,18 +62,22 @@ def get_img(name, num, color='w'):
     img_path = os.path.join(here, subdir, in_img)
     img = cv2.imread(img_path)
     
-    # Correct BGR->RGB due to OpenCV, switch R and B
-    if color == 'w':
-        img = img[:, :, 2] # populate all color channels
-    elif color == 'r':
-        full = img[:, :, 2] # get only populated channel (blue)
-        img[:, :, 0] = full # fill red channel
-        img[:, :, 2] = np.zeros((480, 640), np.uint8) # zero blue chanel
+    zero = np.zeros((299, 299), np.uint8)
+    
+    # Set color of letter, account for BGR color space in OpenCV
+    if color == 'r': 
+        img[:, :, 1] = zero
+        img[:, :, 2] = zero
+    elif color == 'g':
+        img[:, :, 0] = zero
+        img[:, :, 2] = zero
+    elif color == 'b':
+        img[:, :, 0] = zero
+        img[:, :, 1] = zero
     elif color == 'c':
-        full = img[:, :, 2] # get only populated channel (blue)
-        img[:, :, 1] = full # populate green to get cyan
-    else: # error check: color white
-        img = img[:, :, 2]
+        img[:, :, 0] = zero
+    elif color == 'y':
+        img[:, :, 2] = zero
     
     return img
 
