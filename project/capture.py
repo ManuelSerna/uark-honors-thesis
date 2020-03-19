@@ -23,6 +23,7 @@ import cv2
 import numpy as np
 
 import file_io as f
+import time_series as ts
 
 
 
@@ -104,9 +105,10 @@ Outputs:
 # Called by: draw_contours.
 #=================================
 def update_drawing(center, draw, drawing, frame, r, x, y):
-    drawing_color = (0, 0, 255)
+    #drawing_color = (0, 0, 255) # red
+    drawing_color = (255,255,255) # white
     if draw:
-        r = 5 # radius/size of circle drawn
+        r = 7 # radius/size of circle drawn
         
         # Draw circle and add center=(x,y) to corresponding time series
         if r > 0:
@@ -245,9 +247,16 @@ Return:
 #=================================
 def capture(letter = "", recording = False, video=False):
     # Drawing variables
-    counter = 0 # keeps track of letter identifier
+    counter = 40 # keeps track of letter identifier
     draw = False
     drawing = np.zeros((480, 640, 3), np.uint8)
+    
+    # ROI variables
+    center_x = 320
+    center_y = 240
+    offset = 150
+    pt1 = (center_x-offset, center_y-offset)
+    pt2 = (center_x+offset, center_y+offset)
     
     # Create empty time series
     x = []
@@ -266,6 +275,11 @@ def capture(letter = "", recording = False, video=False):
     while(True):
         # Get current frame to extract info and modify it
         ret, frame = cap.read()
+        
+        # Draw roi where we would ideally want to draw the letter
+        cv2.rectangle(frame, pt1, pt2, (0,0,255), thickness=1)
+        
+        # Process frame
         drawing, frame, x, y = process_frame(draw, drawing, frame, x, y)
         
         # Save frame in video
@@ -284,8 +298,18 @@ def capture(letter = "", recording = False, video=False):
                 print(" Capture complete.")
                 if recording:
                     counter += 1
-                    f.write_img(drawing, letter, counter)
-                    f.write_json(letter, counter, x, y)
+                    
+                    # Crop drawing so it's only the ROI and save to PNG
+                    roi = drawing[
+                        center_y-offset+1:center_y+offset,
+                        center_x-offset:center_x+offset-1
+                    ]
+                    f.write_img(roi, letter, counter)
+                    
+                    # Write unmodified and modified time series
+                    f.write_json(name=letter, num=counter, x=x, y=y, og=True)
+                    f.write_json(letter, counter, ts.apply_all(x), ts.apply_all(y))
+                    
                     drawing, x, y = reset(drawing, x, y)
                 else:
                     break

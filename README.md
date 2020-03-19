@@ -21,9 +21,14 @@ All other letters that are also in the English language are represented by thems
 ## Classification
 Here are the following classification methods I used:
  * __Dynamic Time Warping__
+ * __K-Nearest Neighbors__
+ * __Nearest Centroid__
+<!-- TODO: IF TIME ALLOWS: template matching (see Streeter, she compared against an ideal image; but I think it's better to use CV's lecture) -->
+<!-- TODO: Deep learning -->
 
 The rest of this document describes the directories of the project.
 
 ## Project
 To run the program, you must first execute ```run.sh```. Follow the prompts given by the script to record data, plot a certain letter, and classify a drawing.
-In the ```letters``` directory, you will find 33 sub-directories named after each of the letters (accented letters are named using the convention defined earlier). In each directory for each letter there are PNG and JSON files to represent the drawing and time series of the drawing, respectively.
+<!-- TODO: Record data. 1st round: 40 per class -->
+<!-- In the ```letters``` directory, you will find 33 sub-directories named after each of the letters (accented letters are named using the convention defined earlier). In each directory for each letter there are PNG and JSON files to represent the drawing and time series of the drawing, respectively. -->

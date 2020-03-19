@@ -73,9 +73,17 @@ Observations
 ----------------------------------
 Tracker:
     - Success: 
-        - The tracker in its current state is able to track my bright-green marker well. The tracker works best if the background is simple and there are no moving objects. 
-    - Backrground:
-        - If there is another bright-green object in the room it may misidentify it. Lighting using the HSV color space does mitigate the effects of lighting but too much or too little will interfere with the tracking.
+        - The tracker in its current state is able to track my bright-green marker well. The tracker works best if:
+            - backgroud is simple;
+            - well lit, specifically, if a bright-enough light source is in front of me;
+            - not many moving objects;
+            - nothing matches the color of the pen (this can include other warm colors, or when yellow and blue are together).
+        The tracker does not work well if:
+            - the environment is not well lit;
+            - the brighest light source is behind me, this makes it more diificult to pick up the right color;
+            - other objects whose color might interfere with the capture.
+    - If there is another bright-green object in the room it may misidentify it. Lighting using the HSV color space does mitigate the effects of lighting but too much or too little will interfere with the tracking.
+    - In my time recording data, my drawing arm would usually get noticeally slightly tired after about 15 individual drawings. This coincides with the Georgia Tech source.
 
 First round of data capturing (did not include accent-marked letters):
     - The letter E was by far the most difficult to draw.
@@ -93,6 +101,7 @@ Time series analysis
 
 Machine learning classifiers
     - K-nearest neighbors (knn)
+        - This algorithm works best if all the classes are huddled together and as away from other class points as possible. If there is overlap, there will be problems with the classification.
         - One thing I noticed that could be a problem is when the set of k nearest neighbors is multimodal, that is, the mode for two or more letters is the same. Right now I do not have any procedure to account for that.
     - Nearest centroid
         - Very close in terms of implementation to knn

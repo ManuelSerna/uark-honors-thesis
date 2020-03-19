@@ -28,7 +28,7 @@ Return: nothing
 #=================================
 def adjacent_plots(img1, x1, y1, img2, x2, y2):
     print("  Compare two letters.")
-            
+    
     # Stack time series and images into two columns
     fig, axs = plt.subplots(constrained_layout = False)
     spec = gridspec.GridSpec(nrows = 3, ncols = 2, figure=fig)
@@ -86,7 +86,7 @@ Input:
 Return: nothing
 '''
 #=================================
-def overlay_plots(img1=np.zeros((480, 640, 3), np.uint8), x1=[], y1=[], img2=np.zeros((480, 640, 3), np.uint8), x2=[], y2=[]):
+def overlay_plots(img1=np.zeros((299, 299, 3), np.uint8), x1=[], y1=[], img2=np.zeros((299, 299, 3), np.uint8), x2=[], y2=[]):
     print("  Overlay time series plots.")
     
     # Stack time series and images into two columns
@@ -169,13 +169,13 @@ def overlay_plots(letter1, num1, letter2, num2):
     # x time series
     xt = fig.add_subplot(spec[1, :])
     xt.set(ylabel="x time series")
-    xt.plot(x1)
+    xt.plot(x1, 'tab:blue')
     xt.plot(x2, 'tab:red')
     
     # y time series
     yt = fig.add_subplot(spec[2, :])
     yt.set(ylabel="y time series")
-    yt.plot(y1)
+    yt.plot(y1, 'tab:blue')
     yt.plot(y2, 'tab:red')
     
     print("  Displaying overlayed plots. Press 'q' to resume.")
