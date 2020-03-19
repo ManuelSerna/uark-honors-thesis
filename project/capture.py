@@ -247,7 +247,7 @@ Return:
 #=================================
 def capture(letter = "", recording = False, video=False):
     # Drawing variables
-    counter = 0 # keeps track of letter identifier
+    counter = 40 # keeps track of letter identifier
     draw = False
     drawing = np.zeros((480, 640, 3), np.uint8)
     
