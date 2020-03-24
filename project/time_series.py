@@ -1,6 +1,6 @@
 #*********************************
 # Module: time series operations
-#   - Store time series operations to be reused with programs that deal with time series
+#   - Store time series operations to be reused with programs that deal with time series. The user only has to call the function apply_all to apply all these transformations.
 # Author: Manuel Serna-Aguilera
 #*********************************
 
@@ -123,7 +123,7 @@ def decrease_len(t, new_length):
 Input:
     - t: some time series
     - new_length: shrink or grow list to be this new length (default=175)
-Output:
+Return:
     - t: modified time series of length 'new_length'
 '''
 #=================================

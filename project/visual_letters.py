@@ -1,9 +1,12 @@
-# Visualize all data samples for each letter class
-#   - All data points or all centroids
+#*********************************
+# Program: Visualize all data samples or the centroids for each letter class.
+# Author: Manuel Serna-Aguilera
+#*********************************
 
-import file_io as f
 import matplotlib.pyplot as plt
 import sys
+
+import file_io as f
 
 
 
@@ -63,9 +66,9 @@ n = 40
 #selected_list = no_accents
 selected_list = accents
 
-# Plot data according to choice
+# Plot data according to choice:
+# Centroids
 if choice == 'c':
-    print("  Plotting all centroids.")
     for l in selected_list:
         samples_x = []
         samples_y = []
@@ -84,9 +87,8 @@ if choice == 'c':
         cy = avg(samples_y)
         
         plt.plot(cx, cy, markers[l], label='{}'.format(l))
+# All individual data samples
 else:
-    # Default choice
-    print("  Plotting all data samples.")
     for l in selected_list:
         for i in range(1, n+1):
             data = f.get_file(l, i)
@@ -97,10 +99,7 @@ else:
             else:
                 plt.plot(x, y, markers[l])
 
-# Include key
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
-
-# Give names
 plt.title('Letter Data')
 plt.xlabel('x coordinate')
 plt.xlim(0, 99)

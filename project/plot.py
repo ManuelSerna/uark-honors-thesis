@@ -23,7 +23,6 @@ Input:
     - img2: second drawing
     - x2: x time series for second letter
     - y2: y time series for second letter
-Return: nothing
 '''
 #=================================
 def adjacent_plots(img1, x1, y1, img2, x2, y2):
@@ -83,7 +82,6 @@ Input:
     - img2: second drawing (default is a black drawing)
     - x2: x time series for second letter
     - y2: y time series for second letter
-Return: nothing
 '''
 #=================================
 def overlay_plots(img1=np.zeros((299, 299, 3), np.uint8), x1=[], y1=[], img2=np.zeros((299, 299, 3), np.uint8), x2=[], y2=[]):
@@ -131,7 +129,6 @@ Input:
     - num1: number identifier for first letter
     - letter2: character for second letter to plot
     - num2: number identifier for second letter
-Return: nothing
 '''
 #=================================
 def overlay_plots(letter1, num1, letter2, num2):

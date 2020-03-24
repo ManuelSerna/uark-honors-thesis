@@ -1,17 +1,13 @@
 #*********************************
 # Module: Capture functions
-'''
-    - The user calls "process_frame" to update the letter drawing and frame.
-    - This module is meant to be used in several places where capturing is required.
-    Like for data recording, drawing practice, and classification scenarios.
-'''
+#   - This module contains all the code needed to track the marker, draw, and save/return the data. The user simply calls the function capture.
 # Author: Manuel Serna-Aguilera
 #*********************************
 
 '''
 Some notes:
 
-HSV value ranges for opencv:
+HSV value ranges for Opencv:
     - Hue: [0..179] <-these are the color wheel values
     - Saturation: [0..255]
     - Value: [0..255]
@@ -22,22 +18,9 @@ HSV value ranges for opencv:
 import cv2
 import numpy as np
 
+# Import custom modules
 import file_io as f
 import time_series as ts
-
-
-
-#=================================
-# Print prompt
-# Called by: Outside of module before capturing.
-#=================================
-def prompt():
-    print("=============================")
-    print("  Color-Marker Tracker")
-    print("-----------------------------")
-    print("    - Press 'esc' to quit the program.")
-    print("    - To start drawing, press 'd', press 'd' again to stop.")
-    print("=============================")
 
 
 
@@ -66,12 +49,18 @@ def get_hsv_color():
 
 
 #=================================
-# Overlay drawing on given image
-# Input: raw video frame
-# Return: camera frame with updated drawing added
+# Overlay drawing on given frame
+'''
+Input:
+    - frame: frame from video stream
+    - drawing: recently updated letter drawing to be added to frame image
+Return:
+    - frame: updated picture with drawing added to it
+'''
+# Called by: update_drawing
 #=================================
-def overlay(img, drawing):
-    roi = img # region of interest = entire given image
+def overlay(frame, drawing):
+    roi = frame # region of interest = entire frame
     gray_img = cv2.cvtColor(drawing, cv2.COLOR_BGR2GRAY)
     ret, draw_mask = cv2.threshold(gray_img, 10, 255, cv2.THRESH_BINARY)
     draw_mask_inv = cv2.bitwise_not(draw_mask)
@@ -79,33 +68,33 @@ def overlay(img, drawing):
     img_bg = cv2.bitwise_and(roi, roi, mask = draw_mask_inv) # 0-value every pixel except for pixels overlapping with mask
     img_fg = cv2.bitwise_and(drawing, drawing, mask = draw_mask) # apply drawing to image
     
-    # Add drawing to given image
-    img = cv2.add(img_bg, img_fg)
-    return img
+    # Add drawing to given frame
+    frame = cv2.add(img_bg, img_fg)
+    return frame
 
 
 
 #=================================
 # Draw on video frame
 '''
-Inputs:
+Input:
     - center:  center coordinates (u, v) of drawing circle (from contours)
     - draw:    flag for drawing
     - drawing: image to hold air-written character
-    - frame:   raw video frame
+    - frame:   frame from video stream
+    - r:       radius of circle to be put onto drawing
     - x:       x time series
     - y:       y time series
 
-Outputs:
+Output:
     - drawing: image to hold air-written character
     - frame:   frame with updated drawing (other functions specifically deal with this, look at function "update_drawing")
     - x:       updated x time series for drawn letter
     - y:       updated y time series for drawn letter
 '''
-# Called by: draw_contours.
+# Called by: draw_contours
 #=================================
 def update_drawing(center, draw, drawing, frame, r, x, y):
-    #drawing_color = (0, 0, 255) # red
     drawing_color = (255,255,255) # white
     if draw:
         r = 7 # radius/size of circle drawn
@@ -130,7 +119,7 @@ Inputs:
     - contours: contours/edges extraced from color threshold mask
     - draw:     flag for drawing
     - drawing:  image to hold air-written character
-    - frame:    raw video frame
+    - frame:    frame from video stream
     - x:        x time series
     - y:        y time series
 
@@ -140,7 +129,7 @@ Outputs:
     - x:       updated x time series for drawn letter
     - y:       updated y time series for drawn letter
 '''
-# Called by: process_frame.
+# Called by: process_frame
 #=================================
 def draw_contours(contours, draw, drawing, frame, x, y):
     if len(contours) > 0:
@@ -171,7 +160,7 @@ Identify marker in given frame and allow user to draw.
 Inputs:
     - draw:     flag for drawing
     - drawing:  image to hold air-written character
-    - frame:    raw video frame
+    - frame:    frame from video stream
     - x:        x time series
     - y:        y time series
 Outputs:
@@ -180,7 +169,7 @@ Outputs:
     - x:       updated x time series for drawn letter
     - y:       updated y time series for drawn letter
 '''
-# Called by: outside of module by other programs.
+# Called by: capture function
 #=================================
 def process_frame(draw, drawing, frame, x, y):
     frame = cv2.flip(frame, 1) # flip image horizontally for easier drawing
@@ -202,8 +191,8 @@ def process_frame(draw, drawing, frame, x, y):
     # Display images for user
     #---------------------------------
     cv2.imshow('Frame', frame)
-    cv2.imshow('Air-written Letter', drawing)
-    #cv2.imshow('mask', mask) # see what the color thresholding is keeping
+    #cv2.imshow('Air-written Letter', drawing) # displays only the drawing itself
+    #cv2.imshow('Mask', mask) # see what the color thresholding is keeping
     
     return drawing, frame, x, y
 
@@ -221,7 +210,6 @@ Outputs:
     - x:       empty list
     - y:       empty list
 '''
-# Called by: Outside of module by other programs.
 #=================================
 def reset(drawing, x, y):
     drawing = np.zeros((480, 640, 3), np.uint8)
@@ -232,11 +220,10 @@ def reset(drawing, x, y):
 
 
 #=================================
-# Function for data capture
+# Function for data capture, this is the only function any outside program has to call in order to capture data.
 '''
 Input:
     - letter: letter to be recorded (specified by user)
-Flags:
     - video: set true to save capture session
     - record: set true to record data
 Return:
@@ -270,7 +257,7 @@ def capture(letter = "", recording = False, video=False):
         video_file = 'recording-{}.avi'.format(letter)
         out = cv2.VideoWriter(video_file, fourcc, 20.0, (640,480))
     
-    prompt()
+    print("  Marker Tracker. Press: 'esc' to quit; 'd' to start/stop drawing.")
     
     while(True):
         # Get current frame to extract info and modify it

@@ -1,8 +1,9 @@
 #*********************************
 # Module: Write and read files
+#   - This module takes care of writing the time series data into JSON files, as well as the drawings to PNG files, onto the appropriate directories. This module also allows the user to get recorded data and images.
+#   - NOTE: I will return the modified time series. I also store the original time series just in case.
 # Author: Manuel Serna-Aguilera
 #*********************************
-# NOTE: I will return the modified time series. I only store the original time series just in case.
 
 import cv2
 import json
@@ -116,7 +117,7 @@ def get_file(name='', num='', og=False):
 #=================================
 # Write image
 '''
-Inputs:
+Input:
     - img:  image to be saved to a PNG file
     - name: name of letter
     - num: "id" for specific letter
@@ -146,7 +147,7 @@ def write_img(img, name, num):
 #=================================
 # Write time series to JSON
 '''
-Inputs:
+Input:
     - name: name of letter
     - num:  "id" for specific letter
     - x:    x time series

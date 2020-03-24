@@ -13,7 +13,7 @@ import knn
 import nc
 import svm
 
-# Import other modules
+# Import custom modules
 import capture as cp
 import file_io as f
 import time_series as ts
@@ -46,18 +46,15 @@ svm_classifier = svm.initialize(n, selected_list)
 #---------------------------------
 # Continuously test input from capture
 #---------------------------------
-print("  Press 'q' to quit testing.")
 print("  ----------------------------------")
 while True:
     # Capture air-drawn letter and apply time series modifications
     drawing, captured_x, captured_y = cp.capture()
     captured_x = ts.apply_all(captured_x)
     captured_y = ts.apply_all(captured_y)
-
-    print("  Best Matches:")
     
     #.............................
-    # Perform DTW minimum edit distance calculation
+    # 1. Perform DTW minimum edit distance calculation
     #.............................
     start = time.time()
     for letter in selected_list:
@@ -80,7 +77,7 @@ while True:
     print("\tDTW: {} (time: {} s)".format(dtw_match, finish))
     
     #.............................
-    # Perform k-nearest neighbors classification
+    # 2. Perform k-nearest neighbors classification
     #.............................
     start = time.time()
     knn_match = knn.knn(captured_x, captured_y, selected_list, n)
@@ -88,7 +85,7 @@ while True:
     print("\tKNN: {} (time: {} s)".format(knn_match, finish))
     
     #.............................
-    # Perform nearest centroid classification
+    # 3. Perform nearest centroid classification
     #.............................
     start = time.time()
     nc_match = nc.nearest_centroid(captured_x, captured_y, selected_list, n)
@@ -96,10 +93,9 @@ while True:
     print("\tCN: {} (time: {} s)".format(nc_match, finish))
     
     #.............................
-    # Support vector machine
+    # 4. Support vector machine
     #.............................
     start = time.time()
-    #svm_match = svm.svm_classifier(drawing, n, selected_list)
     svm_match = svm.classify(svm_classifier, drawing, selected_list)
     finish = round(time.time() - start, 3)
     print("\tSVM: {} (time: {} s)".format(svm_match, finish))
