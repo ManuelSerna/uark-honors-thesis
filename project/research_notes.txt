@@ -2,6 +2,14 @@ Observations and Notes
 
 
 
+Code
+----------------------------------
+My programming language of choice is Python. I chose this specific language for several reaons: development is fast, there are many tools to make simple processes seamless, and there are many libraries available to me that are easy to use.
+
+SciKit is my machine learning library of choice as it seems easy to learn and quick to implement with. Given the time I have I could not use Keras to be compatible with Python 3.6 in the Anaconda environment.
+
+
+
 Data Capture
 ----------------------------------
 There are 26 letters in the English alphabet (only counting upper-case letters). In the Spanish alphabet, there are 7 more letters to consider, thus adding to the total of 33 distinct letters.
@@ -105,7 +113,26 @@ Machine learning classifiers
         - One thing I noticed that could be a problem is when the set of k nearest neighbors is multimodal, that is, the mode for two or more letters is the same. Right now I do not have any procedure to account for that.
     - Nearest centroid
         - Very close in terms of implementation to knn
-    - Convolutional neural network: TODO
+    - Support Vector Machine (take in images as inputs, where we train on grayscale values).
+        - Apparently SVMs are difficult to implement, according to some sources.
+        - SciKit fortunately offers a SVM classifier which seems easy to call, I just have to feed it a single array that represents the grayscale image. According to the SciKit SVM docs:
+            * The advantages of support vector machines are:
+                - Effective in high dimensional spaces.
+                - Still effective in cases where number of dimensions is greater than the number of samples.
+                - Uses a subset of training points in the decision function (called support vectors), so it is also memory efficient.
+                - Versatile: different Kernel functions can be specified for the decision function. Common kernels are provided, but it is also possible to specify custom kernels.
+            
+            * The disadvantages of support vector machines include:
+                - If the number of features is much greater than the number of samples, avoid over-fitting in choosing Kernel functions and regularization term is crucial.
+                - SVMs do not directly provide probability estimates, these are calculated using an expensive five-fold cross-validation (see Scores and probabilities, below).
+        
+        - Resources
+            - https://scikit-learn.org/stable/modules/svm.html
+            - (some tutorial) https://monkeylearn.com/blog/introduction-to-support-vector-machines-svm/
+    
+    With the amount of time I have left, I think just doing the SVM and image alignment/feature detection methods will be good enough so I can start writing.
+
+
 
 Definitions
 ----------------------------------
