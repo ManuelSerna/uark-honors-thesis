@@ -2,12 +2,12 @@
 This repository contains code and data used for my undergraduate honors thesis (CSCE 491VH) at the University of Arkansas, from Fall 2019 to Spring 2020.
 
 ## Objective
-The purpose of this project is to evaluate various classification methods for "air-written" letters (which I will limit to only upper-case letters for simplicity) of the Spanish alphabet. For non-Spanish speakers, this includes the 26 regular letters of the English alphabet, plus the letters Á, É, Í, Ó, Ú, Ü, and Ñ. Note that I will not include Ch, Rr, or Ll as these strings are a combination of already existing letters. I will only focus on _single_ letters.
+The purpose of this project is to evaluate various classification methods for "air-written" letters (which I will limit to only upper-case letters) of the Spanish alphabet. For non-Spanish speakers, this includes the 26 regular letters of the English alphabet, plus the letters Á, É, Í, Ó, Ú, Ü, and Ñ. Note that I will not include Ch, Rr, or Ll as these strings are a combination of already existing letters. I will only focus on _single_ letters.
 
 ## Design
-To draw in the air, I created a program to track a brightly-colored marker, detect its contours (which should just be a circle), and thus draw colored filled circles which are overlayed on each frame from the video stream. The user presses the 'd' key to start drawing with the marker and again when they are done. The user has the option, when the shell script is executed, to record data (both time series and image), plot a certain saved letter file, and draw a letter for certain classifiers to try to identify.
+To draw in the air, I created a program that tracks a brightly-colored marker (neon-ish green in my case), detects the contours of this brightly-colored area, and then draws filled circles which are overlayed onto each frame from the video stream.
 
-In the code, I will refer to the letters with accent marks as follows
+In this project, I will refer to the letters with accent marks as follows
  * Á: aa
  * É: ee
  * Í: ii
@@ -16,19 +16,14 @@ In the code, I will refer to the letters with accent marks as follows
  * Ü: uuu
  * Ñ: nn
 
-All other letters that are also in the English language are represented by themselves (e.g. 'a' for A).
+All other letters that are also in the English language are represented by themselves (e.g. 'A' for A).
 
 ## Classification
 Here are the following classification methods I used:
  * __Dynamic Time Warping__
  * __K-Nearest Neighbors__
  * __Nearest Centroid__
-<!-- TODO: IF TIME ALLOWS: template matching (see Streeter, she compared against an ideal image; but I think it's better to use CV's lecture) -->
-<!-- TODO: Deep learning -->
-
-The rest of this document describes the directories of the project.
+ * __Support Vector Machine__
 
 ## Project
-To run the program, you must first execute ```run.sh```. Follow the prompts given by the script to record data, plot a certain letter, and classify a drawing.
-<!-- TODO: Record data. 1st round: 40 per class -->
-<!-- In the ```letters``` directory, you will find 33 sub-directories named after each of the letters (accented letters are named using the convention defined earlier). In each directory for each letter there are PNG and JSON files to represent the drawing and time series of the drawing, respectively. -->
+To run the program, you must first execute ```run.sh```. Follow the prompts given the script to record data, compare time series, enter test data and classify letters, or plot all data samples.

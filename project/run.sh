@@ -1,9 +1,13 @@
 #*********************************
 # Honors Thesis Hand Tracking and Classification Project
-# Program: shell script to run the following programs based on user input
-#   - capture.py-- record labeled data for a specified letter
-#   - plot_data.py-- allows user to plot the time series for a specified letter
-#   - analyze_time_series.py-- analyze time series to classify a letter
+# Purpose: This Bash script can execute a variety of programs, whose functionalities are described in the prompt.
+#
+# Here is a rundown of what each program called by this script does:
+#   - capture.py: Record labeled data for a specified letter.
+#   - plot_data.py: Compare the time series plots for two given letters.
+#   - classify_data.py: Enter a testing session, where the user can draw and quickly get results from each classifier.
+#   - visual_letters.py: Plot all letter data onto a plot.
+#
 # Author: Manuel Serna-Aguilera
 # University of Arkansas, Fayetteville
 # Spring 2020
@@ -26,8 +30,8 @@ prompt () {
     echo "Actions to execute"
     echo "  1: Record data."
     echo "  2: Compare time series."
-    echo "  3: Classify air-written letter."
-    # TODO: include a practice option? Update README if I do
+    echo "  3: Classify air-written letters."
+    echo "  4: Visualize all data samples."
     echo "  0: Exit program."
     echo "*********************************"
     echo "Enter choice below:"
@@ -105,7 +109,7 @@ do
         #.................................
         if [[ $letter1 =~ $re ]] && [[ $num1 =~ $numbers ]] && [[ $num2 =~ $numbers ]]
         then
-            echo "  Plotting data."
+            echo "  Plotting time series."
             python plot_data.py $letter1 $num1 $letter2 $num2
         else
             error_message
@@ -116,13 +120,22 @@ do
     #---------------------------------
     elif [ $choice == '3' ]
     then
-        echo "  Classifying data."
+        echo "  Entering classication session."
         python classify_data.py
+    
+    #---------------------------------
+    # 4. Visualize all data samples with a scatter plot
+    #---------------------------------
+    elif [ $choice == '4' ]
+    then
+        echo "  Plotting all data samples."
+        echo -e "  Plot:\n[d]: all data samples\n[c]: all centroids"
+        read data_type
+        python visual_letters.py $data_type
     fi
     
     echo ""
     echo ""
     echo ""
 done
-
 echo "Done."

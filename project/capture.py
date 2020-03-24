@@ -296,14 +296,17 @@ def capture(letter = "", recording = False, video=False):
             else:
                 draw = False
                 print(" Capture complete.")
+                
+                # Consider only the region of interest
+                roi = drawing[
+                    center_y-offset+1:center_y+offset,
+                    center_x-offset:center_x+offset-1
+                ]
+                
                 if recording:
                     counter += 1
                     
-                    # Crop drawing so it's only the ROI and save to PNG
-                    roi = drawing[
-                        center_y-offset+1:center_y+offset,
-                        center_x-offset:center_x+offset-1
-                    ]
+                    # Save region of interest to PNG
                     f.write_img(roi, letter, counter)
                     
                     # Write unmodified and modified time series
@@ -328,4 +331,4 @@ def capture(letter = "", recording = False, video=False):
     if recording:
         return
     else:
-        return drawing, x, y
+        return roi, x, y
