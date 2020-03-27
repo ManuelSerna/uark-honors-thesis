@@ -58,13 +58,27 @@ no_accents = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', '
 
 accents = ['A', 'AA', 'E', 'EE', 'I', 'II', 'N', 'NN', 'O', 'OO', 'U', 'UU', 'UUU']
 
+'''
+# Letters and their accented counterparts
+['A', 'AA']
+['E', 'EE']
+['I', 'II']
+['O', 'OO']
+['U', 'UU', 'UUU']
+['N', 'NN']
+
+# Sets of samples that overlap
+['B', 'E', 'R']
+'''
+selected_list=['H', 'I']
+
 # Number of samples to plot
 n = 40
 
 # Of the possible lists to plot, choose one
 #selected_list = all_letters
 #selected_list = no_accents
-selected_list = accents
+#selected_list = accents
 
 # Plot data according to choice:
 # Centroids

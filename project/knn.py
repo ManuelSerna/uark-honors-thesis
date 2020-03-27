@@ -27,8 +27,9 @@ Return:
 '''
 #=================================
 def knn(tx, ty, letters, n):
-    k = 2*n-1 # k neighbors to consider
     l = len(letters)
+    k = 2*n
+    #k = int(math.sqrt(l*n))
     
     # Create dictionary to store the distances
     # Key: letter with identifying number
@@ -40,9 +41,9 @@ def knn(tx, ty, letters, n):
     cy = avg(ty)
     
     for i in range(l):
-        for j in range(1, 10):
+        for j in range(1, n+1):
             # Query current letter data and get the average x and y values to represent the point for the sample
-            query = f.get_file(letters[i], j) 
+            query = f.get_file(letters[i], j)
             qx = avg(ts.apply_all(query[0]))
             qy = avg(ts.apply_all(query[1]))
             

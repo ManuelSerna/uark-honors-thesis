@@ -4,7 +4,7 @@ Observations and Notes
 
 Code
 ----------------------------------
-My programming language of choice is Python. I chose this specific language for several reaons: development is fast, there are many tools to make simple processes seamless, and there are many libraries available to me that are easy to use.
+My programming language of choice is Python. I chose this specific language for several reaons: development is fast, there are many built-in tools to make simple processes seamless, and there are many external libraries available to me that are easy to use (that I am also familiar with). These libraries enable me to navigate directories, do array/matrix operations, plot data, among other tasks that enable me to focus on the actual research.
 
 SciKit is my machine learning library of choice as it seems easy to learn and quick to implement with. Given the time I have I could not use Keras to be compatible with Python 3.6 in the Anaconda environment.
 
@@ -15,59 +15,57 @@ Data Capture
 There are 26 letters in the English alphabet (only counting upper-case letters). In the Spanish alphabet, there are 7 more letters to consider, thus adding to the total of 33 distinct letters.
 
 When drawing each letter, I have to consider the following characteristics for DRAWING:
-    1. Starting (x, y) point.
+    1. Starting (x, y) point of the drawing, and therefore the position of the drawn letters.
         * SOLUTION: Translate all points to start from (0,0).
     
     2. My velocity when drawing (can be calculated by taking the difference of consecutive points).
         * SOLUTION: Dr. Gauch mentioned "unit speed" where if there are too little points, add points in the middle of consecutive points that have significant distance from them.
+        * NOTE: I was not able to tackle this problem with a satisfactory solution in time.
     
     3. What coordinates are associated with "noise"? 
         - In other words, which parts of a given drawing are not part of the intended letter and are just strokes used to draw the remaining portions of the letter.
-        - This will be important when considering letters with accent marks.
-        * SOLUTION: TBD
+        - Much of this noise can be broken down in two ways:
+            i. Many coordinates around some position indicates a pause, ignore most of these noisy points.
+            ii. Fast strokes indicate what would be a "pen-up" action when writing the letter on paper. I could possibly calculate a speed threshold such that detected speeds above that number would be ignored.
+        * NOTE: I was not able to tackle this problem with a satisfactory solution in time.
     
-    4. The position of the drawn letters.
-        * SOLUTION: Same as #1--translate all points to start from (0, 0).
-    
-    5. How big the letter drawn is (i.e. time series with different lengths)
+    4. How big the letter drawn is (i.e. time series with different lengths)
         * SOLUTION: Scale all time series in some range [a...b] to be in a certain output range [d...c]
     
-    6. Is the letter drawn at an angle?
-        - SOLUTION: I will ignore this rule as people usually do not write letters in unusual angles.
+    5. Is the letter drawn at an angle?
+        * NOTE: I will ignore this case as people usually do not write letters in unusual angles.
     
+To make sure I have a decent amount of data, I will have at least 40 training samples for each letter.
+    - Minimum total: 33*40 = 1320 samples.
 
-For each letter, I will record 9 time series.
-    - Total: 33*9=297 total images and time series.
-    - Each letter has its own subdirectory. Where the accented letters will denoted as follows: Á->aa; É->ee; Í->ii; Ó->oo; Ú->uu; Ü->uuu; Ñ->nn
 
 
 Strategy 1: tracking a brightly-colored object
 ----------------------------------
 a. Procedure for drawing letter
     1. Capture video at 30 frames per second (fps) with a resolution of 640 x 480 on my laptop camera.
-        - We also create a black 640 x 480 image to store the letter drawing in.
+    
     2. Capture frame, and thus we capture and process 30 frames every second.
         - To start drawing, the user can press 'd' at any time to start drawing and again to stop. If the user is not drawing, the tracking still occurs but no drawing is done.
+    
     3. Given frame in BGR color space, convert to HSV color space.
+    
     4. Get the lower and upper hsv thresholds
         - I have the lower limits hardcoded while the upper thresholds are the maximum values
+    
     5. Threshold the HSV version of the frame based on the ranges taken and get the mask, this mask will show only the marker that we will draw with.
+    
     6. Given the mask (which recall is a binary image), find the contours (simply put, the edges) of marker, which should be a circle.
+    
     7. Draw the contours on the current frame to check that we are finding the marker.
+    
     8. Draw the minimum enclosing circle to know where our marker is going to "draw" in the air.
+    
     9. If the user is drawing, given the information of the minimum enclosing circle, draw colored filled circles onto the drawing image, and impose this image onto the frame. 
         - The (x, y) coordinates are also added to lists that store the x and y coordinates separately.
         - The overlaying of the drawing onto the frame is done by a series of bitwise AND operations. We want the colored drawing (recall it is on a black background) to be overlayed on top of the frame.
-    10. Repeat steps 2-9 until the user presses the 'd' key to stop drawing their letter of choice.
-
-- Now, we can do two things with the data captured
-b. Store labeled data
-    1. When the user is done drawing, call the function write_data, pass it our final drawing image as well as the final time series lists x and y.
-    2. Store x and y in a Python dictionary (Python's version of a hashmap).
-    3. Store this dictionary in a JSON file in the appropriate subdirectory.
-    4. Store the drawing in a PNG image in the same directory as the JSON file.
-    5. Assign x and y to be empty and return x and y
-c. Capturing some drawing: COMING SOON
+    
+    10. Repeat steps 2-9 until the user presses the 'd' key to stop drawing their letter of choice. The final drawing is saved in a (299 x 299)
 
 
 
@@ -129,8 +127,6 @@ Machine learning classifiers
         - Resources
             - https://scikit-learn.org/stable/modules/svm.html
             - (some tutorial) https://monkeylearn.com/blog/introduction-to-support-vector-machines-svm/
-    
-    With the amount of time I have left, I think just doing the SVM and image alignment/feature detection methods will be good enough so I can start writing.
 
 
 

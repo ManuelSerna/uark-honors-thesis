@@ -30,13 +30,9 @@ no_accents = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', '
 accents = ['A', 'AA', 'E', 'EE', 'I', 'II', 'N', 'NN', 'O', 'OO', 'U', 'UU', 'UUU']
 selected_list = all_letters
 
-n = 40 # number of samples currently recorded for each letter class
 infty = 999999
-
-# DTW setup
-minx = infty # min edit dist for x
-miny = infty # min edit dist for y
-dtw_match = ''
+n = 40 # number of samples currently recorded for each letter class
+test_iteration = 1 # ith test in the session
 
 # SVM setup
 svm_classifier = svm.initialize(n, selected_list)
@@ -46,8 +42,9 @@ svm_classifier = svm.initialize(n, selected_list)
 #---------------------------------
 # Continuously test input from capture
 #---------------------------------
-print("  ----------------------------------")
 while True:
+    print("  Trial: {}-------------------------".format(test_iteration))
+    
     # Capture air-drawn letter and apply time series modifications
     drawing, captured_x, captured_y = cp.capture()
     captured_x = ts.apply_all(captured_x)
@@ -56,23 +53,29 @@ while True:
     #.............................
     # 1. Perform DTW minimum edit distance calculation
     #.............................
+    minx = infty # min edit dist for x
+    miny = infty # min edit dist for y
+    
     start = time.time()
+    max_sample_size = 3 # consider this many samples
+    
+    # NOTE: iterating through all samples for dtw takes a long time
     for letter in selected_list:
-        #for i in range(1, n+1): # NOTE: iterating through all samples for dtw takes a long time
-        i = 1 # For DTW, only look at first recorded sample
-        # Query data for current labeled letter
-        query = f.get_file(letter, i)
-        query_x = query[0]
-        query_y = query[1]
-        
-        # Calculate minimum edit distances for x and y time series
-        dx = dtw.dtw(captured_x, query_x)
-        dy = dtw.dtw(captured_y, query_y)
-        
-        if minx > dx and miny > dy:
-            minx = dx
-            miny = dy
-            dtw_match = letter
+        for i in range(1, max_sample_size+1):
+            # Query data for current labeled letter
+            query = f.get_file(letter, i)
+            query_x = query[0]
+            query_y = query[1]
+            
+            # Calculate minimum edit distances for x and y time series
+            dx = dtw.dtw(captured_x, query_x)
+            dy = dtw.dtw(captured_y, query_y)
+            
+            if minx > dx and miny > dy:
+                minx = dx
+                miny = dy
+                dtw_match = letter
+    
     finish = round(time.time() - start, 3)
     print("\tDTW: {} (time: {} s)".format(dtw_match, finish))
     
@@ -99,6 +102,8 @@ while True:
     svm_match = svm.classify(svm_classifier, drawing, selected_list)
     finish = round(time.time() - start, 3)
     print("\tSVM: {} (time: {} s)".format(svm_match, finish))
-    print("  ----------------------------------")
+    
+    print()
+    test_iteration += 1
 
 print("  End testing session.")

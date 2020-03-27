@@ -1,9 +1,6 @@
 #*********************************
 # Classifier: Support Vector Machine (SVM)
 # Author: Manuel Serna-Aguilera
-'''
-Note: TODO: specify parameters used in SVM (kernel type, gamma, etc.)
-'''
 #*********************************
 
 import cv2
@@ -27,7 +24,7 @@ Return:
 '''
 #=================================
 def initialize(n, letters):
-    classifier = svm.SVC(gamma=0.1)
+    classifier = svm.SVC()
     
     # Initialize test data and class label arrays
     num_samples = n * len(letters)
