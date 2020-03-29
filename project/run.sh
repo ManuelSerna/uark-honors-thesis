@@ -120,8 +120,11 @@ do
     #---------------------------------
     elif [ $choice == '3' ]
     then
-        echo "  Entering classication session."
-        python classify_data.py
+        echo "  True label: "
+        read true_label
+    
+        echo "  Entering classication session for true label $true_label."
+        python classify_data.py $true_label
     
     #---------------------------------
     # 4. Visualize all data samples with a scatter plot

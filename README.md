@@ -8,13 +8,13 @@ The purpose of this project is to evaluate various classification methods for "a
 To draw in the air, I created a program that tracks a brightly-colored marker (neon-ish green in my case), detects the contours of this brightly-colored area, and then draws filled circles which are overlayed onto each frame from the video stream.
 
 In this project, I will refer to the letters with accent marks as follows
- * Á: aa
- * É: ee
- * Í: ii
- * Ó: oo
- * Ú: uu
- * Ü: uuu
- * Ñ: nn
+ * Á: AA
+ * É: EE
+ * Í: II
+ * Ó: OO
+ * Ú: UU
+ * Ü: UUU
+ * Ñ: NN
 
 All other letters that are also in the English language are represented by themselves (e.g. 'A' for A).
 

@@ -113,6 +113,24 @@ else:
             else:
                 plt.plot(x, y, markers[l])
 
+'''
+# Code to visulize the letters based on the time series instead
+
+data = f.get_file('U', 1)
+x = data[0]
+y = data[1]
+
+l = len(x)
+y_max = 99.0
+
+for i in range(l):
+    plt.plot(x[i], (-1*y[i])+y_max, 'b.')
+
+plt.xlim(0, 100)
+plt.ylim(0, 100)
+'''
+
+
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
 plt.title('Letter Data')
 plt.xlabel('x coordinate')
