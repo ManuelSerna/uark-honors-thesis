@@ -134,15 +134,15 @@ Input:
 def overlay_plots(letter1, num1, letter2, num2):
     print("  Overlay time series plots.")
     
-    query1 = f.get_file(letter1, num1)
+    query1 = f.get_file(name=letter1, num=num1)
     x1 = query1[0]
     y1 = query1[1]
-    img1 = f.get_img(letter1, num1, 'r')
+    img1 = f.get_img(name=letter1, num=num1, color='r')
     
-    query2 = f.get_file(letter2, num2)
+    query2 = f.get_file(name=letter2, num=num2, training=True)
     x2 = query2[0]
     y2 = query2[1]
-    img2 = f.get_img(letter2, num2, 'c')
+    img2 = f.get_img(name=letter2, num=num2, color='c')
     
     # Stack time series and images into two columns
     fig, axs = plt.subplots(constrained_layout = False)

@@ -3,10 +3,10 @@
 # Purpose: This Bash script can execute a variety of programs, whose functionalities are described in the prompt.
 #
 # Here is a rundown of what each program called by this script does:
-#   - capture.py: Record labeled data for a specified letter.
+#   - record_data.py: Record data for training data set (option 1) or testing data set (option 4).
 #   - plot_data.py: Compare the time series plots for two given letters.
-#   - classify_data.py: Enter a testing session, where the user can draw and quickly get results from each classifier.
-#   - visual_letters.py: Plot all letter data onto a plot.
+#   - visual_letters.py: Plot all letter data onto a scatter plot.
+#   - classify_data.py: Given training data, compute the accuracies of all classifiers for every letter.
 #
 # Author: Manuel Serna-Aguilera
 # University of Arkansas, Fayetteville
@@ -15,12 +15,14 @@
 
 # NOTE: "$?" is the value most recently returned by a function
 
-# Global vars
+# Choice for which program to execute
 choice='00'
 
 # When writing/reading files, all names will fall into the following regular expression
 # a-z, or aa, ee, ii, oo, uu, uuu, nn
 re='^([a-z]|aa|ee|ii|oo|uu|uuu|nn)$'
+
+
 
 #=================================
 # Function: print choices and prompt
@@ -28,10 +30,13 @@ re='^([a-z]|aa|ee|ii|oo|uu|uuu|nn)$'
 prompt () {
     echo "*********************************"
     echo "Actions to execute"
-    echo "  1: Record data."
-    echo "  2: Compare time series."
-    echo "  3: Classify air-written letters."
-    echo "  4: Visualize all data samples."
+    echo "  1: Enter training data."
+    echo "  2: Plot (training) time series."
+    echo "  3: Plot (training) data."
+    echo "  4: Enter test data."
+    echo "  5: Classify recorded test data."
+    echo "  6: Demo tracking and classification."
+    echo ""
     echo "  0: Exit program."
     echo "*********************************"
     echo "Enter choice below:"
@@ -39,105 +44,108 @@ prompt () {
     return $choice
 }
 
-#=================================
-# Function: print general error message
-#=================================
 error_message () {
     echo "  Error: invalid input! Try again."
 }
 
 
-#---------------------------------
+
+#=================================
 # Continuosly run program until user inputs nothing or exits
-#---------------------------------
+#=================================
 while [ $choice != '0' ]
 do
     # First, prompt user
     prompt
     
     #---------------------------------
-    # 1. Record data
+    # 1. Record training data
     #---------------------------------
     if [ $choice == '1' ]
     then
         echo ""
-        echo "  Pick a letter to draw: "
+        echo "  Enter true label for training data:"
         read letter
-        #echo "  Enter letter file number (0-5): "
-        #read number
         
         if [[ $letter =~ $re ]]
         then
-            echo "  Recording data."
-            python record_data.py $letter
-            echo "  Data capture done."
+            echo "  Recording training data."
+            python record_data.py '1' $letter
+            echo "  Training data capture done."
         else
             error_message
         fi
     
     #---------------------------------
-    # 2. Visualize two time series
+    # 2. Plot two time series from training data
     #---------------------------------
     elif [ $choice == '2' ]
     then
-        numbers='^[1-9]$' # regular expression for one number
-        num2="" # initialize num2 to be empty
+        echo "  Plot training data time series."
         
-        #.................................
-        # Prompt user
-        #.................................
-        echo "  Enter FIRST letter to plot:"
+        echo "  Letter 1:"
         read letter1
-        echo "  Enter FIRST letter file number (1-9): "
+        echo "  Letter ID 1:"
         read num1
         
-        echo "  Enter SECOND letter to plot."
-        #echo "  Or press ENTER to skip"
+        echo "  Letter 2:"
         read letter2
+        echo "  Letter ID 2:"
+        read num2
         
-        # If user will enter a second letter, check that it will fall into the regular expression
-        if [[ ! -z $letter2 ]] && [[ $letter2 =~ $re ]]
-        then
-            echo "  Enter SECOND letter file number (1-9): "
-            read num2
-        else
-            echo 
-        fi
+        python plot_data.py $letter1 $num1 $letter2 $num2
         
-        #.................................
-        # With inputs, plot time series
-        #.................................
-        if [[ $letter1 =~ $re ]] && [[ $num1 =~ $numbers ]] && [[ $num2 =~ $numbers ]]
+    #---------------------------------
+    # 3. Plot training data samples
+    #---------------------------------
+    elif [ $choice == '3' ]
+    then
+        data_type='d'
+        echo "  Plotting all data samples."
+        echo -e "  Plot:\n[d]: all data samples\n[c]: all centroids"
+        read data_type
+        
+        python visual_letters.py $data_type
+    
+    #---------------------------------
+    # 4. Record testing data
+    #---------------------------------
+    elif [ $choice == '4' ]
+    then
+        echo "  Enter true label for test data:"
+        read letter
+        
+        if [[ $letter =~ $re ]]
         then
-            echo "  Plotting time series."
-            python plot_data.py $letter1 $num1 $letter2 $num2
+            echo "  Recording testing data."
+            python record_data.py '2' $letter
+            echo "  Testing data capture done."
         else
             error_message
         fi
         
+        echo ""
+    
     #---------------------------------
-    # 3. Classify air-written letter
+    # 5. Classify test data
     #---------------------------------
-    elif [ $choice == '3' ]
+    elif [ $choice == '5' ]
     then
-        echo "  True label: "
-        read true_label
-    
-        echo "  Entering classication session for true label $true_label."
-        python classify_data.py $true_label
+        echo "  Writing results to file."        
+        python classify_data.py
     
     #---------------------------------
-    # 4. Visualize all data samples with a scatter plot
+    # 6. Demo--capture air-written letter and attempt to classify it.
     #---------------------------------
-    elif [ $choice == '4' ]
+    elif [ $choice == '6' ]
     then
-        echo "  Plotting all data samples."
-        echo -e "  Plot:\n[d]: all data samples\n[c]: all centroids"
-        read data_type
-        python visual_letters.py $data_type
-    fi
+        echo "  Enter true label for training data:"
+        read letter
+        
+        python demo.py $letter
+        
+    fi # end considering $choice
     
-    echo ""
     echo ""
     echo ""
 done

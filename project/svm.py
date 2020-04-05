@@ -60,7 +60,7 @@ Return:
 def transform_img(letter='', num=0, img=np.array([])):
     # Query image if IDing info was given
     if img.size == 0:
-        img = f.get_img(letter, num)
+        img = f.get_img(name=letter, num=num)
     
     # Grayscale image
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

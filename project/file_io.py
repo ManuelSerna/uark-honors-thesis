@@ -19,14 +19,21 @@ Input:
     - img: go to image directory (flag defaulted to true)
     - og: go to unmodified time series directory (flag defaulted to false)
     - letter_dir: letter directory
+    - training: flag that decides whether we interact with training or testing data
 Return:
     - here:   current path (same as file) as a string
     - subdir: sub-directory if there is one
 '''
+# Called by: all the get and write file functions in this module
 #=================================
-def get_dir(img=True, og=False, letter_dir=''):
+def get_dir(img=True, og=False, letter_dir='', training=True):
     here = os.path.dirname(os.path.realpath(__file__))
     subdir = 'letters/'
+    
+    if training:
+        subdir += 'training/'
+    else:
+        subdir += 'testing/'
     
     if img:
         subdir += 'images/'
@@ -49,14 +56,15 @@ Input:
     - name: name of letter to fetch info of
     - num: "id" for specific letter
     - color: set image to a certain color (defaulted to empty string to represent white)
+    - training: set to true to get data from training data directory
 Return: image (3D cv2 array)
 
 NOTE: Assume letters are drawn in BGR where red = 255, blue and green are 0
 '''
 #=================================
-def get_img(name, num, color=''):
+def get_img(name='', num=0, color='', training=True):
     # Get current dir
-    here, subdir = get_dir(letter_dir=name)
+    here, subdir = get_dir(letter_dir=name, training=training)
     
     # Fetch image
     in_img = "{}{}.png".format(name, num)
@@ -91,12 +99,13 @@ Input:
     - name: name of letter to fetch info of
     - num: "id" for specific letter
     - og: flag to dictate if we want to query the original time series (defaulted to false)
+    - training: set to true to get data from training data directory
 Return: array that holds the x and y time series
 '''
 #=================================
-def get_file(name='', num='', og=False):
+def get_file(name='', num='', og=False, training=True):
     # Get current dir
-    here, subdir = get_dir(img=False, og=og, letter_dir=name)
+    here, subdir = get_dir(img=False, og=og, letter_dir=name, training=training)
     
     # Fetch file
     in_data = "{}{}.json".format(name, num)
@@ -121,11 +130,12 @@ Input:
     - img:  image to be saved to a PNG file
     - name: name of letter
     - num: "id" for specific letter
+    - training: set to true to write data to training data directory
 '''
 #=================================
-def write_img(img, name, num):
+def write_img(img, name, num, training=True):
     # Get current dir
-    here, subdir = get_dir(letter_dir=name)
+    here, subdir = get_dir(letter_dir=name, training=training)
     
     # If sub-directory does not exist, make directory
     if not os.path.isdir(os.path.join(here, subdir)):
@@ -153,15 +163,16 @@ Input:
     - x:    x time series
     - y:    y time series
     - og: flag to dictate if we want to query the original time series (defaulted to false)
+    - training: set to true to write data to training data directory
 '''
 #=================================
-def write_json(name='', num='', x=[], y=[], og=False):
+def write_json(name='', num='', x=[], y=[], og=False, training=True):
     data = {}
     data['x'] = x
     data['y'] = y
     
     # Get current dir
-    here, subdir = get_dir(img=False, og=og, letter_dir=name)
+    here, subdir = get_dir(img=False, og=og, letter_dir=name, training=training)
     
     # If sub-directory does not exist, make directory
     if not os.path.isdir(os.path.join(here, subdir)):

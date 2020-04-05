@@ -116,7 +116,7 @@ def update_drawing(center, draw, drawing, frame, r, x, y):
 # Based on hsv image contours, draw circles on frame (if the user is drawing)
 '''
 Inputs:
-    - contours: contours/edges extraced from color threshold mask
+    - contours: contours/edges extracted from color threshold mask
     - draw:     flag for drawing
     - drawing:  image to hold air-written character
     - frame:    frame from video stream
@@ -179,7 +179,7 @@ def process_frame(draw, drawing, frame, x, y):
     #---------------------------------
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # convert bgr -> hsv
     hsv_lower, hsv_upper = get_hsv_color() # set color to threshold on
-    mask = cv2.inRange(hsv, hsv_lower, hsv_upper) # treshold hsv image based on hsv ranges
+    mask = cv2.inRange(hsv, hsv_lower, hsv_upper) # threshold hsv image based on hsv ranges
     
     #---------------------------------
     # Find contours of brightly-colored drawing object
@@ -225,16 +225,17 @@ def reset(drawing, x, y):
 Input:
     - letter: letter to be recorded (specified by user)
     - video: set true to save capture session
-    - record: set true to record data
+    - training: set true to record training data
+    - testing: set true to record testing data
 Return:
     - drawing: image that now holds air-drawn letter
     - x: populated time series for x coordinates
     - y: populated time series for y coordinates
 '''
 #=================================
-def capture(letter = "", recording = False, video=False):
+def capture(letter = "", training = False, testing = False, video=False):
     # Drawing variables
-    counter = 40 # keeps track of letter identifier
+    counter = 0 # keeps track of letter identifier
     draw = False
     drawing = np.zeros((480, 640, 3), np.uint8)
     
@@ -290,15 +291,20 @@ def capture(letter = "", recording = False, video=False):
                     center_x-offset:center_x+offset-1
                 ]
                 
-                if recording:
+                if training:
+                    counter += 1
+                    f.write_img(roi, letter, counter) # save only region-of-interest
+                    f.write_json(name=letter, num=counter, x=x, y=y, og=True) # unmodified time series
+                    f.write_json(letter, counter, ts.apply_all(x), ts.apply_all(y)) # modified time series
+                    
+                    drawing, x, y = reset(drawing, x, y)
+                elif testing:
                     counter += 1
                     
-                    # Save region of interest to PNG
-                    f.write_img(roi, letter, counter)
-                    
-                    # Write unmodified and modified time series
-                    f.write_json(name=letter, num=counter, x=x, y=y, og=True)
-                    f.write_json(letter, counter, ts.apply_all(x), ts.apply_all(y))
+                    # NOTE: writing to 'testing' directory
+                    f.write_img(img=roi, name=letter, num=counter, training=False) # save only region-of-interest
+                    f.write_json(name=letter, num=counter, x=x, y=y, og=True, training=False) # unmodified time series
+                    f.write_json(name=letter, num=counter, x=ts.apply_all(x), y=ts.apply_all(y), training=False) # modified time series
                     
                     drawing, x, y = reset(drawing, x, y)
                 else:
@@ -314,8 +320,8 @@ def capture(letter = "", recording = False, video=False):
     cap.release()
     cv2.destroyAllWindows()
     
-    # Return drawing data if not recording
-    if recording:
+    # Return drawing data if not recording or not collecting data
+    if training or testing or video:
         return
     else:
         return roi, x, y

@@ -3,6 +3,8 @@
 # Author: Manuel Serna-Aguilera
 #*********************************
 
+import math
+
 import file_io as f
 import time_series as ts
 
@@ -54,22 +56,19 @@ def nearest_centroid(tx, ty, letters, n):
         class_y = avg(ay)
         centroids[letters[i]] = (class_x, class_y)
     
-    # Calculate average of captured data
+    # Calculate centroid/mean of captured data
     captured_x = avg(tx)
     captured_y = avg(ty)
     
-    # Compute minimum distance between captured data and some class
-    min_dx = infty
-    min_dy = infty
+    # Compute minimum distance between captured data and all centroids
+    min_distance = infty
     best_match = 'na'
     
     for key, value in centroids.items():
-        dx = abs(value[0]-captured_x)
-        dy = abs(value[1]-captured_y)
+        distance = math.sqrt((captured_x-value[0])**2+(captured_y-value[1])**2)
         
-        if dx < min_dx and dy < min_dy:
-            min_dx = dx
-            min_dy = dy
+        if distance < min_distance:
+            min_distance = distance
             best_match = key
     
     return best_match

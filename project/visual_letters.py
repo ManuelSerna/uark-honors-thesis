@@ -70,10 +70,10 @@ accents = ['A', 'AA', 'E', 'EE', 'I', 'II', 'N', 'NN', 'O', 'OO', 'U', 'UU', 'UU
 # Sets of samples that overlap
 ['B', 'E', 'R']
 '''
-selected_list=['H', 'I']
+selected_list=all_letters
 
 # Number of samples to plot
-n = 40
+n = 80
 
 # Of the possible lists to plot, choose one
 #selected_list = all_letters
