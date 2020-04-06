@@ -28,8 +28,7 @@ Return:
 #=================================
 def knn(tx, ty, letters, n):
     l = len(letters)
-    k = 2*n
-    #k = int(math.sqrt(l*n))
+    k = int(math.sqrt(l*n)) # square root of the number of all training samples
     
     # Create dictionary to store the distances
     # Key: letter with identifying number

@@ -139,7 +139,7 @@ do
     #---------------------------------
     elif [ $choice == '6' ]
     then
-        echo "  Enter true label for training data:"
+        echo "  Enter true label:"
         read letter
         
         python demo.py $letter
