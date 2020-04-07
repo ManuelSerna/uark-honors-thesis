@@ -31,9 +31,8 @@ selected_list = all_letters
 
 true_label = (sys.argv[1]).upper()
 infty = 999999
-n = 40 # number of samples currently recorded for each letter class
+n = 80 # number of samples currently recorded for each letter class
 svm_classifier = svm.initialize(n, selected_list)
-
 
 
 #---------------------------------    

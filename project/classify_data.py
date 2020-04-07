@@ -45,12 +45,21 @@ print("  Setup done.")
 
 '''
 For each letter in the set of letters (Spanish alphabet), calculate the overall accuracy of each classifier.
+    - Store each classification in a dictionary and write to a JSON file at the end.
 '''
+confusion = {}
+
 for letter in letters:
     '''
     i. For all n_test samples of a certain letter, get the best match from each classifier
     '''
     current_letter_results = [] # store match results for each sample here
+    
+    # Lists for matches to store in confusion matrix
+    dtw_matches = []
+    knn_matches = []
+    nc_matches = []
+    svm_matches = []
     
     for letter_id in range(1, n_test+1):
         '''
@@ -112,6 +121,11 @@ for letter in letters:
         svm_match = svm.classify(svm_classifier, test_drawing, letters)
         matches.append(svm_match)
         
+        dtw_matches.append(dtw_match)
+        knn_matches.append(knn_match)
+        nc_matches.append(nc_match)
+        svm_matches.append(svm_match)
+        
         # Add match results for current letter sample
         current_letter_results.append(matches)
         
@@ -141,7 +155,17 @@ for letter in letters:
         if svm_match == letter:
             svm_accuracy += 1
     
-    # Add classifier accuracies for current letter to final dictionary
+    '''
+    iii. 
+    '''
+    # Add classifier matches (for current letter) into confusion matrix dictionary
+    confusion[letter] = {}
+    confusion[letter]['DTW'] = dtw_matches
+    confusion[letter]['KNN'] = knn_matches
+    confusion[letter]['NC'] = nc_matches
+    confusion[letter]['SVM'] = svm_matches
+    
+    # Add classifier accuracies for current letter fo results dictionary
     accuracies = {}
     
     accuracies['DTW'] = dtw_accuracy/n_test
@@ -156,6 +180,9 @@ for letter in letters:
 # Write dictionary to JSON file
 with open("results.json", 'w') as file:
     file.write(json.dumps(results, indent=4))
+
+with open("all_best_matches.json", 'w') as file:
+    file.write(json.dumps(confusion, indent=4))
 
 finish = round(time.time() - start, 3)
 print("Total time: {}".format(finish))

@@ -10,9 +10,6 @@ import time_series as ts
 
 
 
-infty = 999999
-n = 9 # number of samples per class
-
 def avg(a):
     return int(sum(a)/len(a)) # average of elements in an array a
 
@@ -29,6 +26,7 @@ Return:
 #=================================
 def nearest_centroid(tx, ty, letters, n):
     l = len(letters)
+    infty = 999999
     
     # Create dictionary to store centroid/mean location for each letter class
     # Key: letter (class)

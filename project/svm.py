@@ -24,11 +24,10 @@ Return:
 '''
 #=================================
 def initialize(n, letters):
-    classifier = svm.SVC()
-    
     # Initialize test data and class label arrays
     num_samples = n * len(letters)
     train_data = np.zeros(shape=(num_samples, 784))
+    
     labels = []
     
     # Transform training data (images)
@@ -40,7 +39,10 @@ def initialize(n, letters):
             counter += 1
     
     # Fit to data
+    classifier = svm.SVC()
     classifier.fit(train_data, labels)
+    
+    #print(classifier._gamma)
     
     return classifier
 
