@@ -68,7 +68,35 @@ accents = ['A', 'AA', 'E', 'EE', 'I', 'II', 'N', 'NN', 'O', 'OO', 'U', 'UU', 'UU
 ['N', 'NN']
 
 # Sets of samples that overlap
-['B', 'E', 'R']
+['AA', 'II', 'OO']
+
+['B', 'D', 'E', 'R']
+
+['C', 'N', 'M', 'V']
+
+['G', 'II', 'UU']
+
+['H', 'I', 'NN', 'S']
+
+['M', 'NN', 'H']
+
+- KNN misclassifications for N were very random, too many letters
+['N', 'A', 'C', 'O', 'V']
+
+['OO', 'EE', 'II', 'Q']
+
+['R', 'D', 'K']
+
+- KNN misclassifications for S were very random
+
+['U', 'X']
+
+- KNN misclassifications for V were very random
+
+['W', 'EE', 'O']
+
+- Z is a letter of interest since KNN failed 30 times to correctly id it
+['Z', 'S', 'I', 'H', 'M']
 '''
 selected_list=all_letters
 
