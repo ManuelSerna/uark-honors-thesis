@@ -84,7 +84,7 @@ Input:
     - y2: y time series for second letter
 '''
 #=================================
-def overlay_plots(img1=np.zeros((299, 299, 3), np.uint8), x1=[], y1=[], img2=np.zeros((299, 299, 3), np.uint8), x2=[], y2=[]):
+def overlay_plots2(img1=np.zeros((299, 299, 3), np.uint8), x1=[], y1=[], img2=np.zeros((299, 299, 3), np.uint8), x2=[], y2=[]):
     print("  Overlay time series plots.")
     
     # Stack time series and images into two columns

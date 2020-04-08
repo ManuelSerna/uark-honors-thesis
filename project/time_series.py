@@ -21,33 +21,29 @@ Return:
 # Called by: set_length
 #=================================
 def increase_len(t, new_length):
-    s = [t[0]]
+    s = [t[0]] # new lengthened time series s
     l = len(t)
     diff = new_length - l
     step = int(math.floor(new_length/diff)-1)
     
     if step <= 1:
-        step = 2
+        step = 2 # minimum step size
     
     while diff > 0:
+        # If length only differs by 1, insert one element at i=1
+        if diff == 1:
+            s.insert(1, int((t[0]+t[1])/2))
+            diff -= 1
+        
+        # Add interpolated value at index i=step or add from t
         for i in range(1, l):
-            current_val = t[i]
             if i % step == 0 and diff > 0:
-                prev_val = t[i-1]
-                est_val = int((current_val + prev_val)/2)
-                
-                s.append(est_val)
-                s.append(current_val)
+                s.append(int((t[i] + t[i-1])/2)) # add interpolated value
+                s.append(t[i])
                 
                 diff -= 1
             else:
-                s.append(current_val)
-        
-        if diff == 1:
-            # Interpolate between first and second elements
-            est_val = int((s[0]+s[1])/2)
-            s.insert(1, est_val)
-            diff -= 1
+                s.append(t[i])
         
         # Recalcuate step size according to new output time series size
         if diff > 0:
@@ -75,33 +71,28 @@ Return:
 # Called by: set_length
 #=================================
 def decrease_len(t, new_length):
-    s = [t[0]] # reduced time series s
+    s = [t[0]] # new shortened time series s
     l = len(t)
     diff = l - new_length
     step = int(math.floor(l/diff)-1)
     
     if step <= 1:
-        step = 2
+        step = 2 # minimum step size
     
     while diff > 0:
+        # If length only differs by 1, insert one element at i=1
+        if diff == 1:
+            s.insert(1, int((t[0]+t[1])/2))
+            diff -= 1
+        
+        # Add interpolated value at index i=step or add from t
         for i in range(1, l):
-            current_val = t[i]
             if i % step == 0 and diff > 0:
-                prev_val = t[i-1]
-                est_val = int((current_val + prev_val)/2)
-                
                 x = s.pop(-1)
-                s.append(est_val)
-                
+                s.append(int((t[i] + t[i-1])/2))
                 diff -= 1
             else:
-                s.append(current_val)
-                
-        if diff == 1:
-            # Interpolate between first and second elements
-            est_val = int((s[0]+s[1])/2)
-            s.insert(1, est_val)
-            diff -= 1
+                s.append(t[i])
         
         # Recalcuate step size according to new output time series size
         if diff > 0:
