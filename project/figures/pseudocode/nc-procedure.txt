@@ -7,7 +7,7 @@ NEAREST-CENTROID(X, Y, letters, n)
 6           append qx to aX
 7           qy=avg(y time series for letter ij)
 8           append qy to aY    
-9   C[i]=[avg(aX), avg(aY)]
+9       C[i]=[avg(aX), avg(aY)]
 10  let cx=avg(X)
 11  let cy=avg(Y)
 12  min_dist = infinity // infinity being some large number
