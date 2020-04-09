@@ -1,0 +1,12 @@
+KNN(X, Y, letters, n)
+1   k = sqrt(length(letters)*n)
+2   let D be a hashmap that maps all training samples to their distances from the test sample
+3   compute the centroid for the test sample using X and Y, respecively
+4   for each letter i in letters
+5       for j in [1...n]
+6           query the sample training letter ij from training set
+7           get the centroid for the current training sample
+8           calculate the Euclidean distance between the sample training letter and the test sample
+9   sort D based on increasing distances
+10  let K be the list of the first k letters from D
+11  return the first mode encountered in K

@@ -1,0 +1,20 @@
+NEAREST-CENTROID(X, Y, letters, n)
+1   let C be a hashmap that maps letter labels to their centroid location
+2   for each letter i in letters
+3   let aX and aY hold the x and y time series for each training sample
+4   for j in [1...n]
+5       qx=avg(x time series for letter ij)
+6       append qx to aX
+7       qy=avg(y time series for letter ij)
+8       append qy to aY    
+9   C[i]=[avg(aX), avg(aY)]
+10  let cx=avg(X)
+11  let cy=avg(Y)
+12  min_dist = infinity // infinity being some large number
+13  best_match = '' // initialize best match to be empty character
+14  for each key k in C
+15      dist=sqrt((cx-C[k][0])^2+(cy-C[k][1])^2)
+16      if dist < min_dist
+17          min_dist=dist
+18          best_match=k
+19  return best_match

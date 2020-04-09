@@ -1,0 +1,23 @@
+DECREASE-LENGTH(t, new_length)
+1   let s be a new list where s[0]=t[0]
+2   diff=length(t)-new_length
+3   step=floor(length(t)/diff)-1
+4   if step <= 1
+5       step=2 // minimum step size
+6   while diff>0
+7       if diff==1 // insert one more element
+8           insert (t[0]+t[1])/2 at s[1]
+9           diff--
+10      for i in [1...length(t)]
+11          if i%step==0 && diff>0
+12              remove last element of s
+13              append (t[i]+t[i-1])/2 to s
+14              diff--
+15          else
+16              append t[i] to end of s
+17      if diff>0
+18          t=s // reference s as new t
+19          reset s as in line 1
+20          reset diff as in line 2
+21          reset step as in lines 3-5
+22      return s // s is now length new_length

@@ -1,0 +1,16 @@
+DTW(T1, T2)
+1   let n be the length of T1
+2   let m be the length of T2
+3   let R be a (n+1)x(m+1) array
+4   let R[0][0] and R[1][1] equal zero
+5   fill in the first column and row with T1's and T2's elements, starting a index i = 1, respectively
+6   let all other elements in R be some large number
+7   // Calculate minimum edit distance
+8   for i in [1...n]
+9       for i in [1...m]
+10          R[i][j]=(R[i][0]-R[0][j])+min(
+11                      R[i-1][j],
+12                      R[i][j-1],
+13                      R[i-1][j-1]
+14                  )
+15  return R[n][m]

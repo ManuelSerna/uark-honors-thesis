@@ -6,7 +6,7 @@
 import math
 
 import file_io as f
-import time_series as ts
+#import time_series as ts
 
 
 
@@ -42,8 +42,8 @@ def nearest_centroid(tx, ty, letters, n):
         for j in range(1, n+1):
             # Query current letter data and get the average x and y values to represent the point for the sample
             query = f.get_file(letters[i], j)
-            qx = avg(ts.apply_all(query[0]))
-            qy = avg(ts.apply_all(query[1]))
+            qx = avg(query[0])
+            qy = avg(query[1])
             
             # Add average of individual sample for current class
             ax.append(qx)
