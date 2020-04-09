@@ -20,4 +20,4 @@ DECREASE-LENGTH(t, new_length)
 19          reset s as in line 1
 20          reset diff as in line 2
 21          reset step as in lines 3-5
-22      return s // s is now length new_length
+22  return s // s is now length new_length
