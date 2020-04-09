@@ -30,11 +30,6 @@ def increase_len(t, new_length):
         step = 2 # minimum step size
     
     while diff > 0:
-        # If length only differs by 1, insert one element at i=1
-        if diff == 1:
-            s.insert(1, int((t[0]+t[1])/2))
-            diff -= 1
-        
         # Add interpolated value at index i=step or add from t
         for i in range(1, l):
             if i % step == 0 and diff > 0:
@@ -44,6 +39,11 @@ def increase_len(t, new_length):
                 diff -= 1
             else:
                 s.append(t[i])
+        
+        # If length only differs by 1, insert one element at i=1
+        if diff == 1:
+            s.insert(1, int((t[0]+t[1])/2))
+            diff -= 1
         
         # Recalcuate step size according to new output time series size
         if diff > 0:
@@ -79,12 +79,7 @@ def decrease_len(t, new_length):
     if step <= 1:
         step = 2 # minimum step size
     
-    while diff > 0:
-        # If length only differs by 1, insert one element at i=1
-        if diff == 1:
-            s.insert(1, int((t[0]+t[1])/2))
-            diff -= 1
-        
+    while diff > 0:        
         # Add interpolated value at index i=step or add from t
         for i in range(1, l):
             if i % step == 0 and diff > 0:
@@ -93,6 +88,11 @@ def decrease_len(t, new_length):
                 diff -= 1
             else:
                 s.append(t[i])
+        
+        # If length only differs by 1, insert one element at i=1
+        if diff == 1:
+            s.insert(1, int((t[0]+t[1])/2))
+            diff -= 1
         
         # Recalcuate step size according to new output time series size
         if diff > 0:

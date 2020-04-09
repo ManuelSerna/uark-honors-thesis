@@ -5,16 +5,16 @@ DECREASE-LENGTH(t, new_length)
 4   if step <= 1
 5       step=2 // minimum step size
 6   while diff>0
-7       if diff==1 // insert one more element
-8           insert (t[0]+t[1])/2 at s[1]
-9           diff--
-10      for i in [1...length(t)]
-11          if i%step==0 && diff>0
-12              remove last element of s
-13              append (t[i]+t[i-1])/2 to s
-14              diff--
-15          else
-16              append t[i] to end of s
+7       for i in [1...length(t)]
+8           if i%step==0 && diff>0
+9               remove last element of s
+10              append (t[i]+t[i-1])/2 to s
+11              diff--
+12          else
+13              append t[i] to end of s
+14      if diff==1 // insert one more element
+15          insert (t[0]+t[1])/2 at s[1]
+16          diff--
 17      if diff>0
 18          t=s // reference s as new t
 19          reset s as in line 1
