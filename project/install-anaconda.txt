@@ -1,0 +1,57 @@
+Install Anaconda distribution (on Linux Manjaro)
+
+In order to use deep learning as one of my classification methods, I will need to use the Keras machine learning library.
+
+This installation process works as of March, 2020. 
+
+
+
+Installation steps
+1) Go to the Downloads page: https://www.anaconda.com/distribution/#linux
+
+2) Run the script to install
+    $ chmod 755 xxx.sh
+    $ ./xxx.sh
+    
+3) Update Anaconda if necessary using
+    $ conda update -n base conda
+
+4) Downgrade to Python 3.6, the latest version compatible with Keras
+    $ conda install python=3.6
+
+5) Now, we will very likely have to install OpenCV (cv2) to Anaconda. Here is the site I used to get cv2 installed:
+
+        https://anaconda.org/conda-forge/opencv
+        
+    Or go here (general):
+        
+        https://anaconda.org
+
+    #To install cv2:
+    #    
+    #    $ conda install -c conda-forge opencv
+    #
+    #I ran into an error when trying to import cv2, the below command fixed it:
+    #    
+    #    $ conda install -c defaults libprotobuf protobuf
+    #
+    #After this I can import cv2 in python 3.6.
+
+6) Now Anaconda modified the .bashrc file so now when we use the 'python' command we use Anaconda3's python interpreter. This causes issues when using OpenCV as the downgrade causes several functions to change. I decided to instead swicth between the two interpreters--the system's (I currently have Python 3.8) and Anaconda's (Python 3.6).
+
+Modify the file .bashrc, in the last line I should find a line that looks like:
+
+    export PATH="/home/manuel/Programming/packages/anaconda3/bin:$PATH"
+
+#Change it so it says:
+#
+#    TODO: INCLUDE NEW ALIAS HERE, CHECK THAT IT WORKS
+#    alias pyconda="~/home/manuel/Programming/packages/anaconda3/bin"
+    
+To use the system interpreter, type at the end of the file:
+    
+    export PATH="/usr/bin/:$PATH"
+
+
+
+Now I have to be able to switch between anaconda and sys pythons, I don't wanna go back and edit potentially a lot of my code just for the Deep NN classifier. Include these changes in the script and revert back to the sys python when classifcation ends.

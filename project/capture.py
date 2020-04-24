@@ -178,6 +178,7 @@ def process_frame(draw, drawing, frame, x, y):
     # Track colored object for air-drawing
     #---------------------------------
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # convert bgr -> hsv
+    #cv2.imshow('HSV Image', hsv)
     hsv_lower, hsv_upper = get_hsv_color() # set color to threshold on
     mask = cv2.inRange(hsv, hsv_lower, hsv_upper) # threshold hsv image based on hsv ranges
     
