@@ -1,0 +1,15 @@
+Results for each classifier
+==================================
+* Spanish Alphabet
+    DTW: 58.69%
+    KNN: 48.79%
+    NC:  47.98%
+    SVM: 97.17% 
+    CNN: 90.2%
+
+* English Alphabet
+    DTW: 60.77% (+ 2.08%)
+    KNN: 51.41% (+ 2.62%)
+    NC:  52.18% (+ 4.20%)
+    SVM: 98.21% (+ 1.03%)
+    CNN: 91.22% (+ 1.02%)

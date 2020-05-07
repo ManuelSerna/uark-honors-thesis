@@ -1,10 +1,10 @@
 Install Anaconda distribution (on Linux Manjaro)
 
-In order to use deep learning as one of my classification methods, I will need to use the Keras machine learning library. The way I intend to do this is after running the other classifiers, the SCRIPT changes the Python interpreter to Anaconda's Python 3.6. Keras only works with Python 3.6 at the latest. After outputting the classification result, revert back to the system's interpreter. It's not the best solution, but it works.
+In order to use NNs as one of my classification methods, I will need to use the Keras machine learning library. The way I intend to do this is after running the other classifiers, the Bash script changes the Python interpreter to Anaconda's Python 3.6. Keras only works with Python 3.6 at the latest. After outputting the classification result, revert back to the system's interpreter. It's not the best solution, but it works.
 
 This installation process works as of March, 2020.
 
-
+==================================
 
 Installation steps
 1) Go to the Downloads page: https://www.anaconda.com/distribution/#linux
